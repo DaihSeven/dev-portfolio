@@ -133,5 +133,53 @@ export const projects: Project[] = [
     category: "Frontend",
     featured: false,
     status: "completed"
-  }
+  },
+  {
+    id: 11,
+    title: "Finance Reminder - Frontend",
+    description: "Interface web para gerenciamento de contas e despesas, integrada à Finance Reminder API. Arquitetura MVC com React, TypeScript e CSS Modules, com deploy na Netlify.",
+    image: "/projects/finance-reminder-frontend.png",
+    technologies: ["React", "TypeScript", "Vite", "Axios", "React Router", "CSS Modules", "Netlify"],
+    link: "https://finance-reminder.netlify.app",
+    github: "https://github.com/DaihSeven/finance-reminder-frontend",
+    category: "Frontend",
+    featured: false,
+    status: "completed"
+  },
+  {
+    id: 12,
+    title: "Finance Reminder - API",
+    description: "API RESTful V2 para gerenciamento de contas a pagar com notificações automáticas de vencimento. Evoluída a partir do projeto desenvolvido no CodeLab (Programadores do Amanhã), com testes automatizados e documentação Swagger.",
+    image: "/projects/finance-reminder-api.png",
+    technologies: ["TypeScript", "Express.js", "JWT", "Docker", "Swagger", "Vitest", "Supertest", "CI/CD"],
+    link: "",
+    github: "https://github.com/DaihSeven/finance-reminder-api",
+    category: "Backend",
+    featured: false,
+    status: "completed"
+  },
+  {
+    id: 13,
+    title: "Landing Page - ADAC Softwares",
+    description: "Landing page responsiva desenvolvida como teste técnico frontend para a ADAC Softwares, com deploy na Vercel.",
+    image: "/projects/adac-softwares.png",
+    technologies: ["React", "TypeScript", "Figma"],
+    link: "https://test-adac-softwares.vercel.app/",
+    github: "https://github.com/DaihSeven/frontend-test-adac-softwares",
+    category: "Frontend",
+    featured: false,
+    status: "completed"
+  },
+  {
+    id: 14,
+    title: "Máquina de Turing",
+    description: "Simulação da Máquina de Turing desenvolvida como projeto do desafio incremental do CodeLab (Programadores do Amanhã), com foco em lógica de programação, algoritmos e pseudocódigo.",
+    image: "/projects/maquina-de-turing.png",
+    technologies: ["JavaScript", "Algoritmos", "Lógica de Programação"],
+    link: "",
+    github: "https://github.com/DaihSeven/challenge-machine-turing",
+    category: "Frontend",
+    featured: false,
+    status: "completed"
+  },
 ]
