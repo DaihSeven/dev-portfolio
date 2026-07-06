@@ -1,8 +1,9 @@
 export default function About() {
  const technologies = [
   // Cloud & DevOps
-  { name: 'AWS', icon: '☁️', color: 'bg-orange-100 text-orange-700' },
+  { name: 'AWS', icon: '☁️', color: 'bg-gray-100 text-blue-700' },
   { name: 'Docker', icon: '🐳', color: 'bg-blue-100 text-blue-700' },
+  { name: 'Google Cloud', icon: '🌫', color: 'bg-orange-100 text-orange-700' },
   
   // Backend & Databases
   { name: 'Java', icon: '☕', color: 'bg-red-100 text-red-700' },
@@ -14,6 +15,7 @@ export default function About() {
   { name: 'Prisma', icon: '🔧', color: 'bg-gray-100 text-gray-800' },
   
   // Frontend
+  { name: 'React', icon: '🎀', color: 'bg-blue-100 text-gray-900' },
   { name: 'Next.js', icon: '▲', color: 'bg-gray-100 text-gray-900' },
   { name: 'TypeScript', icon: '📘', color: 'bg-blue-100 text-blue-700' },
   { name: 'Tailwind', icon: '🎨', color: 'bg-cyan-100 text-cyan-600' },
@@ -22,7 +24,8 @@ export default function About() {
   { name: 'Framer Motion', icon: '✨', color: 'bg-purple-100 text-purple-600' },
   
   // Ferramentas & Outros
-  { name: 'Git', icon: '📦', color: 'bg-orange-100 text-orange-800' },
+  { name: 'Git', icon: '⌨', color: 'bg-orange-100 text-orange-800' },
+  { name: 'GitHub', icon: '📦', color: 'bg-orange-100 text-orange-800' },
   { name: 'Linux', icon: '🐧', color: 'bg-yellow-100 text-yellow-800' },
   { name: 'Python', icon: '🐍', color: 'bg-yellow-100 text-yellow-700' },
   { name: 'JWT', icon: '🔐', color: 'bg-purple-100 text-purple-800' },
@@ -30,6 +33,8 @@ export default function About() {
   { name: 'Swagger', icon: '📝', color: 'bg-green-100 text-green-800' },
   { name: 'Prometheus', icon: '📊', color: 'bg-red-100 text-red-900' },
   { name: 'Grafana', icon: '📈', color: 'bg-orange-100 text-orange-900' },
+  { name: 'Google Workspace', icon: '🖥', color: 'bg-orange-100 text-orange-700' },
+  
 
 ]
 
@@ -130,12 +135,38 @@ export default function About() {
                 <span className="text-blue-600">☁️ Facilitadora Google Cloud Arcade (2026)</span>
               </h4>
               <p className="text-gray-700 leading-relaxed">
-                Capacito alunos e a comunidade em sua jornada de aprendizado em Google Cloud, fornecendo orientação sobre trilhas, 
-                laboratórios práticos e sistema de pontuação. Atuo como ponte entre os alunos e o Google, promovendo aprendizado 
-                coletivo através de grupos de estudo e compartilhamento de materiais.
+                Como Facilitadora do Google Cloud Arcade Brasil 2026, apoiei alunos em sua jornada de aprendizado e,
+                 ao mesmo tempo, aprofundei meus conhecimentos em Google Cloud, IA Generativa e computação em nuvem 
+                 por meio de laboratórios práticos. Desenvolvi experiência hands-on com serviços como IAM, 
+                 Compute Engine, Cloud Storage, Cloud Shell, Cloud Spanner, Vertex AI e ferramentas Google Workspace, 
+                 aplicando conceitos de infraestrutura, segurança, redes e automação.
               </p>
               <p className="text-blue-700"> 
-                Janeiro de 2026 - até o momento. 
+                Janeiro de 2026 - até Maio 2026. 
+              </p>
+            </div>
+
+            <div className="bg-yellow-50 rounded-xl p-6 border-l-4 border-yellow-500">
+              <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                <span className="text-violet-500">🧑‍💻 Freelancer de Desenvolvimento Web</span>
+              </h4>
+              <p className="text-gray-700 leading-relaxed mb-3">
+                👾 HypeCode SoftwareHouse — Desenvolvedora Full Stack Júnior (Freelancer Remota) | 03/2026 – Presente
+              </p>
+              <ul className="list-disc list-inside text-gray-700 leading-relaxed mb-3">
+                <li>Desenvolvimento e manutenção de APIs, automações e dashboards utilizando Python, Flask, Node.js e TypeScript, com foco em integrações com IA, WhatsApp, Telegram e CRM.</li>
+                <li>Implementação de melhorias de infraestrutura e novas funcionalidades, incluindo análise e migração de serviços AWS, garantindo funcionalidade e conectividade com DNS e bancos de dados.</li>
+                <li>Utilização de MySQL, Redis e Docker, assegurando qualidade de código e escalabilidade.</li>
+              </ul>
+              <p className="text-gray-700 leading-relaxed mb-3">
+                🎦 SkyHawk Drones — Desenvolvedora Full Stack Júnior (Freelancer Remota) | 03/2026 – Presente
+              </p>
+              <ul className="list-disc list-inside text-gray-700 leading-relaxed mb-3">
+                <li>Desenvolvimento e manutenção de plataforma web para monitoramento aéreo inteligente, incluindo simulador tático interativo (C2) e área de treinamento, utilizando Next.js, React, TypeScript, Tailwind CSS, Node.js e PostgreSQL.</li>
+                <li>Criação de interfaces modernas, integrações de APIs REST, gerenciamento de conteúdo multimídia e execução de deploys, configurações de DNS, SSL/TLS e hospedagem em servidores/UOLHost.</li>
+              </ul>
+              <p className="text-violet-600">
+                Março de 2026 - até o momento.
               </p>
             </div>
 

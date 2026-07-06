@@ -15,6 +15,18 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    id: 0,
+    title: "SkyHawk Drone Systems - Freelancer",
+    description: "O SkyHawk Drone Systems é uma plataforma web desenvolvida com foco em monitoramento aéreo inteligente, apresentando soluções com drones autônomos, interface tática (C2) e demonstrações operacionais. O projeto é estruturado utilizando Next.js (App Router), com arquitetura modular baseada em componentes reutilizáveis e seções independentes.",
+    image: "/projects/skyhawksite.png",
+    technologies: ["Next.js", "React", "TypeScript", "Tailwind CSS", "CSS Modules"],
+    link: "https://skyhawkdrones.com.br/",
+    github: "Privado do cliente",
+    category: "Frontend",
+    featured: true,
+    status: "completed"
+  },
+  {
     id: 1,
     title: "Nexus Dev Portfolio",
     description: "Portfólio moderno e responsivo desenvolvido com Next.js 15 e React 19, apresentando projetos e habilidades técnicas com design limpo e performance otimizada",

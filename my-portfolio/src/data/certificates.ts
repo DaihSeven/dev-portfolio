@@ -204,5 +204,23 @@ export const certificates: Certificate[] = [
     description: "Formação em liderança, gestão de pessoas e transformação organizacional",
     icon: "👥",
     category: "Certificação"
+  },
+  {
+    id: 22,
+    title: "Bootcamp Afya - Automação de Dados com IA",
+    institution: "DIO",
+    date: "Julho de 2026",
+    description: "Abrange Python, IA Generativa, Machine Learning,Manipulação de Dados e Fundamentos de Banco de Dados.",
+    icon: "🐍",
+    category: "Curso"
+  },
+  {
+    id: 23,
+    title: "Google Cloud Arcade Brazil 2026 Certification",
+    institution: "Google Cloud, SoulCode Academy",
+    date: "Junho de 2026",
+    description: "Como Facilitadora do Google Cloud Arcade Brasil 2026, apoiei alunos em sua jornada de aprendizado e, ao mesmo tempo, aprofundei meus conhecimentos em Google Cloud, IA Generativa e computação em nuvem por meio de laboratórios práticos. Desenvolvi experiência hands-on com serviços como IAM, Compute Engine, Cloud Storage, Cloud Shell, Cloud Spanner, Vertex AI e ferramentas Google Workspace, aplicando conceitos de infraestrutura, segurança, redes e automação.",
+    icon: "📒",
+    category: "Certificação"
   }
 ]
