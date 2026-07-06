@@ -275,11 +275,19 @@ export default function Hero() {
               </div>
 
               <div
-                className="absolute -left-4 bottom-20 bg-black/80 backdrop-blur-sm border border-rose-500/50 rounded-lg px-4 py-2 animate-float"
+                className="absolute -left-4 top-10 bg-black/80 backdrop-blur-sm border border-rose-500/50 rounded-lg px-4 py-2 animate-float"
                 style={{ animationDelay: "2s" }}
               >
                 <p className="text-rose-400 font-bold text-sm">Mentora AWS</p>
-                <p className="text-gray-400 text-xs">Facilitadora Google Cloud</p>
+                <p className="text-gray-400 text-xs">2° + n° de alunos certificados 2025</p>
+              </div>
+
+              <div
+                className="absolute -left-4 bottom-20 bg-black/80 backdrop-blur-sm border border-rose-500/50 rounded-lg px-4 py-2 animate-float"
+                style={{ animationDelay: "2s" }}
+              >
+                <p className="text-rose-400 font-bold text-sm">Freelancer</p>
+                <p className="text-gray-400 text-xs">Dev FullStack</p>
               </div>
             </div>
           </div>

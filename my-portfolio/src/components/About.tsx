@@ -146,9 +146,9 @@ export default function About() {
               </p>
             </div>
 
-            <div className="bg-yellow-50 rounded-xl p-6 border-l-4 border-yellow-500">
+            <div className="bg-violet-50 rounded-xl p-6 border-l-4 border-violet-500">
               <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
-                <span className="text-violet-500">🧑‍💻 Freelancer de Desenvolvimento Web</span>
+                <span className="text-violet-600">🧑‍💻 Freelancer de Desenvolvimento Web</span>
               </h4>
               <p className="text-gray-700 leading-relaxed mb-3">
                 👾 HypeCode SoftwareHouse — Desenvolvedora Full Stack Júnior (Freelancer Remota) | 03/2026 – Presente
