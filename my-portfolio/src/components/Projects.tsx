@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { projects } from '@/data/projects'
 import { Search, ExternalLink, Github, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react'
 import Image from 'next/image'
+import SquiggleUnderline from '@/components/decor/SquiggleUnderline'
 
 // Só aceita links http(s) válidos (ex.: evita "Privado do cliente" virar um link quebrado)
 const isValidUrl = (value?: string) => {
@@ -66,7 +67,7 @@ export default function Projects() {
         <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 text-gray-900">
           Projetos
         </h2>
-        <div className="w-24 h-1 bg-gradient-to-r from-rose-500 to-rose-600 mx-auto mb-12"></div>
+        <SquiggleUnderline className="block w-28 h-3 mx-auto mb-12 text-rose-500" />
 
         {/* Filtros */}
         <div className="space-y-6 mb-12">

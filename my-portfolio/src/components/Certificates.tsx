@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { certificates } from '@/data/certificates'
 import { Search, Calendar, Award, GraduationCap, BookOpen, Sparkles } from 'lucide-react'
+import SquiggleUnderline from '@/components/decor/SquiggleUnderline'
 //Se você entrou aqui para analisar o código perceberá muitos comentários sobre o que é cada parte do código, isso para uma aprendiz de nextjs é muito importante, MAS lembre-se para ambiente produtivo e empresarial não é recomendado, e sim documentação!
 export default function Certificates() {
   const [searchTerm, setSearchTerm] = useState('')
@@ -23,11 +24,11 @@ export default function Certificates() {
   })
 
   // Ícone para cada categoria
-  const getCategoryIcon = (category: string) => {
+  const getCategoryIcon = (category: string, size = 20) => {
     switch(category) {
-      case 'Certificação': return <Award size={20} />
-      case 'Formação': return <GraduationCap size={20} />
-      case 'Curso': return <BookOpen size={20} />
+      case 'Certificação': return <Award size={size} />
+      case 'Formação': return <GraduationCap size={size} />
+      case 'Curso': return <BookOpen size={size} />
       default: return null
     }
   }
@@ -48,7 +49,7 @@ export default function Certificates() {
         <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 text-gray-800">
           Certificados & Formações
         </h2>
-        <div className="w-24 h-1 bg-gradient-to-r from-rose-500 to-rose-600 mx-auto mb-12"></div>
+        <SquiggleUnderline className="block w-28 h-3 mx-auto mb-12 text-rose-500" />
 
         {/* Filtros */}
         <div className="space-y-6 mb-12">
@@ -99,7 +100,7 @@ export default function Certificates() {
                 <div className="flex items-start gap-4">
                   {/* Ícone do Certificado */}
                   <div className="text-5xl flex-shrink-0 group-hover:scale-110 transition-transform text-rose-500">
-                    {cert.icon}
+                    {getCategoryIcon(cert.category, 44)}
                   </div>
                   
                   <div className="flex-1">

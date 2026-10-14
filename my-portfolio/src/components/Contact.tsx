@@ -1,4 +1,6 @@
 import { Mail, Linkedin, Github, Phone } from 'lucide-react'
+import SquiggleUnderline from '@/components/decor/SquiggleUnderline'
+import CurlArrow from '@/components/decor/CurlArrow'
 
 export default function Contact() {
   const contactMethods = [
@@ -38,9 +40,10 @@ export default function Contact() {
         <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 text-gray-800">
           Entre em Contato
         </h2>
-        <div className="w-24 h-1 bg-gradient-to-r from-butter-500 to-rose-500 mx-auto mb-12"></div>
+        <SquiggleUnderline className="block w-28 h-3 mx-auto mb-12 text-rose-500" />
 
-        <p className="text-center text-gray-700 text-lg mb-12 max-w-2xl mx-auto">
+        <p className="relative text-center text-gray-700 text-lg mb-12 max-w-2xl mx-auto">
+          <CurlArrow className="hidden md:block absolute -left-14 -top-2 w-12 h-9 text-rose-500" />
           Estou sempre aberta a novas oportunidades e colaborações. 
           Sinta-se à vontade para entrar em contato!
         </p>

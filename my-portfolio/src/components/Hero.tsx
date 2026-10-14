@@ -2,6 +2,10 @@
 
 import { ArrowRight, Github, Linkedin, Mail } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import ArcFrame from '@/components/decor/ArcFrame'
+import HeartOutline from '@/components/decor/HeartOutline'
+import Sparkle from '@/components/decor/Sparkle'
+import HandNote from '@/components/decor/HandNote'
 //Se você entrou aqui para analisar o código perceberá muitos comentários sobre o que é cada parte do código, isso para uma aprendiz de nextjs é muito importante, MAS lembre-se para ambiente produtivo e empresarial não é recomendado, e sim documentação!
 export default function Hero() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
@@ -221,6 +225,9 @@ export default function Hero() {
             style={{ animationDelay: "0.5s" }}
           >
             <div className="relative">
+              {/* Decoração: arco fino atrás da foto */}
+              <ArcFrame className="absolute -inset-3 sm:-inset-6 text-rose-500 pointer-events-none" />
+
               {/* Círculos animados ao redor */}
               <div className="absolute inset-0 animate-spin-slow">
                 <div className="w-full h-full border-2 border-rose-500/20 rounded-full"></div>
@@ -289,6 +296,15 @@ export default function Hero() {
                 <p className="text-rose-400 font-bold text-sm">Freelancer</p>
                 <p className="text-gray-400 text-xs">Dev FullStack</p>
               </div>
+
+              {/* Decorações desenhadas à mão ao redor da foto */}
+              <HeartOutline className="absolute -top-2 right-6 w-9 h-9 rotate-12 text-rose-500 pointer-events-none" />
+              <Sparkle className="absolute -top-6 left-1/3 w-6 h-6 text-butter-400 pointer-events-none" />
+              <Sparkle className="absolute -bottom-4 right-10 w-8 h-8 text-butter-400 pointer-events-none" />
+              <HandNote
+                text="sempre criando"
+                className="absolute -top-16 right-0 sm:-right-6 text-butter-400 pointer-events-none"
+              />
             </div>
           </div>
         </div>
