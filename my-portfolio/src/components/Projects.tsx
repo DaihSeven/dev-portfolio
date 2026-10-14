@@ -4,6 +4,17 @@ import { useState } from 'react'
 import { projects } from '@/data/projects'
 import { Search, ExternalLink, Github, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react'
 import Image from 'next/image'
+
+// Só aceita links http(s) válidos (ex.: evita "Privado do cliente" virar um link quebrado)
+const isValidUrl = (value?: string) => {
+  if (!value) return false
+  try {
+    const url = new URL(value)
+    return url.protocol === 'http:' || url.protocol === 'https:'
+  } catch {
+    return false
+  }
+}
 //Se você entrou aqui para analisar o código perceberá muitos comentários sobre o que é cada parte do código, isso para uma aprendiz de nextjs é muito importante, MAS lembre-se para ambiente produtivo e empresarial não é recomendado, e sim documentação!
 export default function Projects() {
   const [searchTerm, setSearchTerm] = useState('')
@@ -97,9 +108,10 @@ export default function Projects() {
         {/* Carrossel de Projetos */}
         {filteredProjects.length > 0 && displayedProject ? (
           <div className="relative">
-            <div className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100">
-              {/* Imagem cara Projeto */}
-              <div className="relative h-96 bg-gradient-to-br from-rose-500 to-rose-900 overflow-hidden group">
+            {/* Card em duas colunas no desktop (imagem | conteúdo), empilhado no mobile */}
+            <div className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100 grid grid-cols-1 lg:grid-cols-2 lg:items-center">
+              {/* Imagem cara Projeto - proporção 16:9 */}
+              <div className="relative w-full aspect-video bg-gradient-to-br from-rose-500 to-rose-900 overflow-hidden group">
                 {/* Loading Spinner */}
                 {imageLoading && !imageError && (
                   <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-rose-500 to-rose-900 z-10">
@@ -118,7 +130,7 @@ export default function Projects() {
                     alt={displayedProject.title}
                     fill
                     priority
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+                    sizes="(max-width: 1024px) 100vw, 640px"
                     className={`object-cover transition-all duration-500 ${
                       imageLoading ? 'opacity-0 scale-110' : 'opacity-100 scale-100 group-hover:scale-110'
                     }`}
@@ -166,14 +178,14 @@ export default function Projects() {
 
                 {/* Título sobre a imagem */}
                 <div className="absolute bottom-6 left-6 z-20">
-                  <h3 className="text-3xl font-bold text-white mb-2 drop-shadow-lg">
+                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-2 drop-shadow-lg">
                     {displayedProject.title}
                   </h3>
                 </div>
               </div>
               
               {/* Conteúdo */}
-              <div className="p-8 bg-white">
+              <div className="p-6 md:p-8 bg-white">
                 <p className="text-gray-700 mb-6 leading-relaxed text-lg">
                   {displayedProject.description}
                 </p>
@@ -192,7 +204,7 @@ export default function Projects() {
 
                 {/* Links */}
                 <div className="flex flex-wrap gap-4">
-                  {displayedProject.github && (
+                  {isValidUrl(displayedProject.github) && (
                     <a
                       href={displayedProject.github}
                       target="_blank"
