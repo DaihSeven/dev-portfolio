@@ -275,3 +275,46 @@ Nenhuma cor nem lógica do carrossel foi alterada.
 **Arquivos alterados nesta etapa:** `src/components/About.tsx`.
 
 ---
+
+## 2026-10-22 — Redesign, etapa 1: fontes, tokens de tema, Navbar e Footer
+
+**Pedido:** portar por etapas o design de `design/portfolio-daiane.html` (Next.js 14, TypeScript, Tailwind 3). Etapa 1: (1) fontes Cormorant Garamond, Karla e Caveat via `next/font/google`, como variáveis CSS; (2) tokens de cor do `:root` (claro), `:root[data-theme="dark"]` e `@media (prefers-color-scheme: dark)`, registrados no Tailwind com `var(--…)`; (3) nova Navbar (logo com tulipa, 6 links e botão "Noite no Bósforo" / "Manhã no jardim" que grava `data-theme` no `<html>` e respeita o sistema); (4) novo Footer (gatinho SVG, "Vai, Corinthians!", nome completo, ano); (5) ícones Lucide ou SVG inline, sem emojis. Sem mexer em Hero, About, Projects, Certificates e Contact. Rodar `npm run lint` e `npm run build`.
+
+**Leitura do design:** o arquivo inteiro foi lido (CSS, HTML, símbolos SVG e script). Só o conteúdo base64 das 3 fotos JPEG embutidas foi omitido.
+
+**O que foi feito:**
+- **`src/app/layout.tsx`:**
+  - Fontes: `Cormorant_Garamond` (400/500/600, normal + itálico, `--font-cormorant`), `Karla` (400–700, `--font-karla`) e `Caveat` (500/600, `--font-caveat`), todas com `display: 'swap'` e com as classes de variável no `<html>`.
+  - A Inter continua no `<body>` até as seções antigas serem portadas.
+  - Um script inline no `<head>` lê `localStorage.theme` e aplica `data-theme` antes da primeira pintura, para não piscar o tema errado. `suppressHydrationWarning` no `<html>`.
+- **`src/app/globals.css`:**
+  - Tokens `--ground`, `--surface`, `--surface-2`, `--ink`, `--body`, `--muted`, `--tulip`, `--rose`, `--gold`, `--leaf`, `--line`, `--line-soft`, `--shadow`, `--tile` e `--arc`, mais `color-scheme`, copiados do design.
+  - O escuro vale em `@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) }` e em `:root[data-theme="dark"]`.
+  - `scroll-padding-top` para compensar a barra.
+  - O `body` **manteve** `#fff` / `#000` para não alterar as seções que ainda não foram portadas.
+- **`tailwind.config.js`:**
+  - Cores `ground`, `surface` (+ `surface-2`), `ink`, `body`, `muted`, `tulip`, `gold`, `leaf`, `line` (+ `line-soft`).
+  - **`rose` virou `DEFAULT: 'var(--rose)'` dentro da escala existente**, então `text-rose` / `border-rose` usam o token e `rose-50…600` continua funcionando nas seções antigas.
+  - `fontFamily`: `font-display` (Cormorant), `font-karla` e `font-hand` (Caveat). Também `shadow-soft` e `bg-tile`.
+- **`src/components/icons.tsx`** (novo): `TulipIcon`, `CatIcon`, `SunIcon` e `MoonIcon`, com os mesmos paths SVG do design, `currentColor` e `aria-hidden`.
+- **`src/components/Navbar.tsx`** (reescrito):
+  - Barra `sticky`, 72px, fundo `color-mix(var(--ground) 88%)` com `backdrop-blur`, borda `line-soft` e largura `min(1120px, 100% - 2.5rem)`.
+  - Logo "Daiane" em Cormorant com a tulipa (`text-tulip`). Links Sobre, Jornada, Tecnologias, Projetos, Certificados e Contato, com hover em ink e borda rose.
+  - Botão de tema com lua ("Noite no Bósforo") ou sol ("Manhã no jardim") e `aria-pressed`. Ele grava `data-theme` + `localStorage`. Sem escolha salva, segue o sistema e escuta a mudança de `prefers-color-scheme`.
+  - Foco visível dourado. Como no design, os links somem até 900px (sem menu hambúrguer).
+- **`src/components/Footer.tsx`** (reescrito): borda `line-soft`, fundo `ground`, gatinho de 70px (`text-muted`, opacidade 75%), "Vai, Corinthians!" em Caveat (`text-ink`), "Daiane das Graças Barbosa Koslowski · desenvolvedora full stack" e "© {ano atual}".
+
+**Resultado:**
+- `npm run lint`: **passou** (exit 0). Só aparece o aviso que já existia de `<img>` no `Hero.tsx`.
+- `npm run build`: **passou** (exit 0). Rota `/` estática, 39.9 kB (127 kB First Load).
+- Teste com `next start` + Playwright: com o sistema claro e com o escuro, o tema inicial segue o sistema. O clique alterna `data-theme`, o rótulo, o ícone e o `aria-pressed`. A escolha **persiste ao recarregar**. Sem escolha, uma mudança no tema do sistema é seguida na hora. Em 375px o menu fica oculto. As fontes Cormorant e Caveat foram aplicadas e não houve erros no console. Os prints da Navbar e do Footer (claro e escuro) conferem com o design.
+
+**Observações:**
+- `#jornada` e `#tecnologias` ainda não existem na página (virão nas próximas etapas), então esses dois links ainda não levam a lugar nenhum.
+- No escuro, a barra aparece um pouco acinzentada no topo porque é translúcida sobre o `body` branco antigo. Isso some quando o `body` passar a usar `bg-ground`.
+- O `HandNote.tsx` (decoração do Hero) ainda carrega a Caveat por conta própria. Dá para trocar por `font-hand` quando o Hero for portado.
+- Fora do que eu alterei, o `git status` mostra mudanças do usuário: `src/app/favicon.ico` e os SVGs de `public/` foram apagados, há novas imagens em `public/`, `src/app/pink-tulip.png` e a pasta `design/`.
+
+**Arquivos alterados nesta etapa:** `src/app/layout.tsx`, `src/app/globals.css`, `tailwind.config.js`, `src/components/Navbar.tsx`, `src/components/Footer.tsx` e o novo `src/components/icons.tsx`.
+
+---

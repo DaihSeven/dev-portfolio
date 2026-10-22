@@ -20,6 +20,9 @@ module.exports = {
           700: '#cc9900',
         },
         rose: {
+          // DEFAULT = token do design (text-rose, border-rose); a escala numérica
+          // continua sendo usada pelas seções antigas (text-rose-500 etc.)
+          DEFAULT: 'var(--rose)',
           50: '#fff1f2',
           100: '#ffe4e6',
           200: '#fecdd3',
@@ -27,7 +30,34 @@ module.exports = {
           400: '#fb7185',
           500: '#f43f5e',
           600: '#e11d48',
-        }
+        },
+        // Tokens do design (definidos em globals.css, mudam com o tema claro/escuro)
+        ground: 'var(--ground)',
+        surface: {
+          DEFAULT: 'var(--surface)',
+          2: 'var(--surface-2)',
+        },
+        ink: 'var(--ink)',
+        body: 'var(--body)',
+        muted: 'var(--muted)',
+        tulip: 'var(--tulip)',
+        gold: 'var(--gold)',
+        leaf: 'var(--leaf)',
+        line: {
+          DEFAULT: 'var(--line)',
+          soft: 'var(--line-soft)',
+        },
+      },
+      fontFamily: {
+        display: ['var(--font-cormorant)', 'Georgia', 'serif'],
+        karla: ['var(--font-karla)', 'Segoe UI', 'system-ui', 'sans-serif'],
+        hand: ['var(--font-caveat)', 'cursive'],
+      },
+      boxShadow: {
+        soft: 'var(--shadow)',
+      },
+      backgroundImage: {
+        tile: 'var(--tile)',
       },
       animation: {
         'slide-right': 'slideRight 8s linear infinite',

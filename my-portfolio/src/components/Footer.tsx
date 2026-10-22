@@ -1,23 +1,13 @@
-import { Heart } from 'lucide-react'
+import { CatIcon } from '@/components/icons'
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-white py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center space-y-4">
-          <p className="text-xl font-bold">Daiane - Desenvolvedora Full Stack</p>
-          <p className="text-gray-400">developerdaiane@gmail.com</p>
-          
-          <div className="flex items-center justify-center gap-2 text-gray-400">
-            <span>Vai</span>
-            <Heart size={16} className="text-rose-500 fill-rose-500" />
-            <span>Corinthians!</span>
-          </div>
-          
-          <p className="text-sm text-gray-500">
-            © {new Date().getFullYear()} Daiane. Todos os direitos reservados.
-          </p>
-        </div>
+    <footer className="border-t border-line-soft bg-ground pb-[3.2rem] pt-[2.6rem] text-center font-karla">
+      <div className="mx-auto w-[min(1120px,100%_-_2.5rem)]">
+        <CatIcon className="mx-auto mb-[.9rem] w-[70px] text-muted opacity-75" />
+        <p className="my-1 font-hand text-[1.3rem] text-ink">Vai, Corinthians!</p>
+        <p className="my-1 text-[.9rem] text-muted">Daiane das Graças Barbosa Koslowski · desenvolvedora full stack</p>
+        <p className="my-1 text-[.9rem] text-muted">© {new Date().getFullYear()}</p>
       </div>
     </footer>
   )
