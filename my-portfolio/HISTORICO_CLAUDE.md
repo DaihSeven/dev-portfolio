@@ -392,3 +392,199 @@ Nenhuma cor nem lógica do carrossel foi alterada.
 **Arquivos alterados nesta etapa:** `src/app/icon.png`.
 
 ---
+
+## 2026-10-23 — Redesign, etapa 3: seção Tecnologias ("O que planto no dia a dia")
+
+**Pedido:** (1) criar `src/components/Technologies.tsx` como seção própria (`.sec.band`, `id="tecnologias"`), com o cabeçalho "O que planto no dia a dia", a tulipa e a nota em Caveat "do back-end à nuvem, da tela ao banco"; (2) o "canteiro": card único com os chips como plaquinhas (haste embaixo) e linha pontilhada na base, na ordem Backend, Infra, Frontend e Dados a partir de `src/data/technologies.ts`, só texto; (3) entrada escalonada com `useInView`, respeitando `prefers-reduced-motion`; (4) tirar o bloco do About e pôr `<Technologies />` depois de `<Journey />`. Rodar `npm run lint` e `npm run build`.
+
+**O que foi feito:**
+- **`src/components/Technologies.tsx`** (novo, client):
+  - `.sec.band` com `id="tecnologias"`. O cabeçalho segue o padrão das outras seções (h2 Cormorant + `TulipIcon` + nota `font-hand` `text-rose` de 1.35rem).
+  - Canteiro: `rounded-[18px] border-line bg-surface shadow-soft` com padding `2.2rem 1.8rem 2.6rem`. A linha pontilhada é um `<span>` absoluto com `repeating-linear-gradient(90deg, var(--line) 0 7px, transparent 7px 14px)`, a 1.5rem da base e 1.6rem das laterais.
+  - Plaquinhas: `<li>` com `bg-surface-2 border-line rounded-[7px]`, `px .85rem / py .48rem`, `.92rem`, peso 500, `text-ink`, e hover com borda rose e texto tulip. A haste é um `<span>` de 1×9px em `bg-line`, centralizado embaixo. O espaçamento é `gap .95rem 1rem`.
+  - Ordem: `['Backend', 'Infra/Cloud', 'Frontend', 'Dados'].flatMap(...)` sobre o array de dados, só com `name` (sem os ícones `react-icons`).
+  - Entrada: `useInView` no canteiro. Antes de entrar: `motion-safe:opacity-0 translate-y-[9px] scale-[.97]`. Depois: transição de 500ms em `opacity`/`transform` com `cubic-bezier(.2,.9,.3,1)` e `transition-delay` de `index × 28ms`, como no HTML.
+  - A transição cobre **só opacidade e transform**, como no HTML. Assim o atraso escalonado não deixa o hover lento: a cor muda na hora.
+  - Com `prefers-reduced-motion: reduce`, as classes `motion-safe:` não se aplicam e os chips já aparecem visíveis, sem transição.
+- **`About.tsx`:** removi o bloco "Tecnologias", o import de `@/data/technologies`, `displayOrder` e `orderedTechnologies`.
+- **`page.tsx`:** `<Technologies />` entrou logo após `<Journey />`.
+
+**Resultado:**
+- `npm run lint`: **passou** (exit 0), "No ESLint warnings or errors".
+- `npm run build`: **passou** (exit 0). `/` com 36.4 kB (124 kB First Load), além de `/_not-found` e `/icon.png`, todas estáticas. Desta vez rodei direto no projeto, porque não havia nenhum `next dev` ativo.
+- Teste no navegador (`next start` + Playwright):
+  - Ordem das seções: **header → inicio → sobre → jornada → tecnologias → projetos → certificados → contato**.
+  - `#tecnologias` com as classes `sec band`, título e nota corretos (Caveat). São 27 plaquinhas, 27 hastes e nenhum SVG nos chips, de Java, Spring Boot, Node.js… até PostgreSQL, MongoDB, Prisma. O About não tem mais Tecnologias.
+  - Escalonamento medido por amostragem: o observer dispara ~93ms depois do scroll, os chips começam um a um (1 → 5 → 9 → 12 → 17 → 20 → 24 → 27 em ~730ms) e todos terminam em ~1,1s. Os delays computados vão de 0s, 0.028s até 0.728s.
+  - O hover do 4º chip muda a cor em 50ms (sem atraso).
+  - Com `reducedMotion: reduce`, os 27 chips ficam visíveis desde o início.
+  - Sem erros no console. Os prints em 1280px (claro) e 375px (escuro) conferem com o design.
+
+**Observações:**
+- O design também lista **Flask, MySQL e Redis**, que não existem em `src/data/technologies.ts`. Como a fonte pedida é o arquivo de dados, eles não aparecem. Para incluí-los é preciso adicioná-los ao array, e o campo `icon` é obrigatório no tipo.
+- O campo `icon` de `technologies.ts` (e com ele o `react-icons`) ficou **sem uso** na interface. Dá para remover o campo e a dependência numa limpeza futura.
+- O link "Tecnologias" da barra agora leva à seção.
+
+**Arquivos alterados nesta etapa:** o novo `src/components/Technologies.tsx`, `src/components/About.tsx` e `src/app/page.tsx`.
+
+---
+
+## 2026-10-23 — Tecnologias: logos nos chips + Flask, MySQL e Redis
+
+**Pedido:** correção do pedido anterior: cada plaquinha deve ter o logo da tecnologia (campo `icon` via react-icons) à esquerda do nome, com `w-4 h-4`, `flex-shrink-0`, `aria-hidden` e gap de 0.5rem, e o chip em `flex items-center`. A cor deve ser monocromática (`text-rose`, e `text-tulip` no hover do chip), sem as cores das marcas. Adicionar Flask (Backend, depois de Python) e MySQL e Redis (Dados, depois de PostgreSQL e MongoDB) com `SiFlask`, `SiMysql` e `SiRedis`. Manter a ordem, as hastes, a linha pontilhada e a entrada escalonada. Confirmar que nenhum nome é truncado. Rodar `npm run lint` e `npm run build`.
+
+**O que foi feito:**
+- **`src/data/technologies.ts`:** `SiFlask`, `SiMysql` e `SiRedis` **existem** no react-icons 5.7.0 instalado, então não precisei de equivalentes. Flask entrou logo depois de Python. MySQL e Redis entraram depois de MongoDB e antes de Prisma. O total passou de 27 para 30.
+- **`src/components/Technologies.tsx`:**
+  - O `<li>` ganhou `group flex items-center gap-2` (gap de 0.5rem).
+  - Antes do nome entra `<Icon className="h-4 w-4 flex-shrink-0 text-rose group-hover:text-tulip" aria-hidden="true" />`, e o nome foi para um `<span>`.
+  - Nada mais mudou: ordem, haste, linha pontilhada, `useInView`, delays de 28ms e `motion-safe`.
+  - Não há `truncate`, `overflow-hidden`, `text-ellipsis` nem `whitespace-nowrap`.
+
+**Resultado:**
+- `npm run lint`: **passou** (exit 0), "No ESLint warnings or errors".
+- `npm run build`: **passou** (exit 0). `/` com 38.7 kB (126 kB First Load), além de `/_not-found` e `/icon.png`, todas estáticas. Rodei numa cópia no scratchpad, porque havia um `next dev` do usuário ativo na porta 3000 (iniciado às 12:53).
+- Teste no navegador (`next start` da cópia + Playwright, em 1280px claro, 320px escuro e 1280px com `reducedMotion: reduce`):
+  - 30 chips, todos com SVG como primeiro filho, de 16×16px e `aria-hidden="true"`. O chip é `display: flex`, `align-items: center`, com `gap: 8px`.
+  - A cor dos ícones é exatamente o token `--rose` (`#dd7c8c` no claro, `#e8909c` no escuro). No hover, texto e ícone ficam em `--tulip` (`#c8453c`).
+  - A ordem vai de Java, Spring Boot, Node.js, Express, Python, **Flask**, JWT, bcrypt e Swagger, passa por AWS…, React… e termina em PostgreSQL, MongoDB, **MySQL**, **Redis** e Prisma.
+  - 30 hastes e a linha pontilhada presentes.
+  - Entrada escalonada: 0/30 visíveis antes do scroll e 30/30 depois. Com `reduce`, 30/30 desde o início.
+  - **Truncamento:** nenhum nome cortado e nenhum `white-space: nowrap`, inclusive em 320px. Num teste forçando o canteiro a 110px, "Spring Boot", "Google Cloud", "Google Workspace" e "Framer Motion" **quebram em 2 linhas**, sem reticências.
+  - Sem erros no console. Os prints conferem.
+
+**Observações:**
+- O `SiMysql` é o logotipo com a palavra "MySQL" escrita, então em 16px fica pouco legível. Se quiser, dá para trocar por `SiMysql` num tamanho maior ou por outro ícone de banco (ex.: `GrMysql` ou `TbBrandMysql`, se existirem na versão instalada).
+- No teste de 110px, "Google Workspace" ultrapassa um pouco a borda, porque a palavra "Workspace" sozinha não cabe. Isso só acontece em larguras artificiais: de 320px para cima, tudo cabe.
+- Fora desta seção: em 320px, o botão de tema da Navbar quebra em duas linhas ("Manhã no / jardim").
+- Com os ícones de volta, o campo `icon` e o `react-icons` voltaram a ser usados (a nota da etapa anterior sobre removê-los não vale mais).
+
+**Arquivos alterados nesta etapa:** `src/data/technologies.ts` e `src/components/Technologies.tsx`.
+
+---
+
+## 2026-10-23 — Redesign, etapa 4: Projetos (dados, lista alternada, filtros, capas)
+
+**Pedido:** seguindo `design/portfolio-daiane.html` e `design/dados-portfolio.md` (seção PROJETOS e "Regras das capas em SVG"): (1) atualizar `src/data/projects.ts` com todos os projetos do arquivo, com as categorias `frontend`, `backend`, `fullstack`, `devops` e `dados-ia`, sem "mobile", e com os links `github`, `githubBack`, `demoUrl` e `docsUrl`; não apagar os projetos antigos que não estão no arquivo, e listá-los; (2) reescrever `Projects.tsx`: lista vertical alternada, imagem em arco 4:3 com `next/image`, selo "Destaque", busca e filtros com contador, sem setas ou pontos, e "Nada plantado nessa categoria ainda." quando vazio; (3) botões "Ver online", "Documentação", "GitHub" / "GitHub front" + "GitHub back", só com https válido, abrindo em nova aba com `noopener noreferrer`, e "Projeto em equipe" no Food-Rescue; (4) capas: print com Playwright (1200×900, 30s, jpg < 200 KB) com fallback em SVG, e SVGs pelas regras do arquivo; (5) stack real do MLOps mais as próximas etapas. Rodar lint e build.
+
+**1. `src/data/projects.ts`** (reescrito):
+- Tipos novos: `ProjectCategory` (`frontend | backend | fullstack | devops | dados-ia`, **sem mobile**) e `ProjectKind` (`pessoal | freelance | equipe`, que aparece na linha "Freelance · Front-end").
+- `Project` passou a ter `id: string` (slug do arquivo), `image`, `technologies`, `nextTechnologies?`, `category`, `kind`, `featured?`, `github?`, `githubBack?`, `demoUrl?` e `docsUrl?`. Saíram `link` e `status`, que não eram exibidos.
+- Novo `projectCategories` (valor + rótulo), usado nos filtros e nos rótulos.
+- **16 projetos do arquivo**, na ordem dele: SkyHawk, Watchtower, Finance Reminder API, Finance Reminder Frontend, AjudaSocial API, Client Social Connect, MLOps, Observabilidade, Food-Rescue, Project Azimuth, Assistente Virtual com IA, Detecção de Anomalias, DockedItems, Landing ADAC, Dev Portfolio e HypeCode.
+  - SkyHawk: mantive a imagem atual (`skyhawksite.png`) e o link `skyhawkdrones.com.br` como "Ver online". O "Privado do cliente" não é URL e saiu.
+  - Watchtower: `github` (front) + `githubBack` (back) + `demoUrl`.
+  - Food-Rescue: `kind: 'equipe'` + `docsUrl`.
+  - HypeCode: sem links (projeto de cliente).
+  - **MLOps:** stack `Python, scikit-learn, FastAPI, Prometheus, Grafana, Alertmanager, Docker, Docker Compose` e `nextTechnologies: GitHub Actions, Terraform, Bash, Kubernetes (kind), Helm, MLflow`, exibidas como "Próximas etapas: …".
+- **5 projetos do site antigo que não estão no arquivo, mantidos** no fim da lista com os dados e imagens de antes (só adaptados ao tipo novo):
+  1. **Nexus Dev Portfolio** (frontend, destaque)
+  2. **Study Manager API** (backend)
+  3. **AWS EC2 Storage Project** (devops)
+  4. **BreakFree - Final Project** (frontend, com "Ver online" no GitHub Pages)
+  5. **Máquina de Turing** (frontend)
+- **Atenção, fusão:** o antigo card **"Watchtower Backend API"** não virou card próprio. O arquivo trata o Watchtower como um projeto só, com "GitHub back", então o repositório do back-end está no botão "GitHub back" do Watchtower. O link da documentação antiga (`watchtower-backend.onrender.com/api-docs/`) não está no arquivo e ficou de fora. Se quiser o card separado de volta, é só pedir.
+- **Links do site antigo que não estão no arquivo** (o arquivo é a fonte de verdade, então não foram incluídos): Finance Reminder Frontend (`finance-reminder.netlify.app`), Client Social Connect (`client-social-connect.vercel.app`), Landing ADAC (`test-adac-softwares.vercel.app`) e AjudaSocial (a documentação antiga `ajudasocialapi.onrender.com/api-docs/` foi substituída pelo link do arquivo, `ajudasocial-api-yxbj.onrender.com`).
+
+**2. `src/components/Projects.tsx`** (reescrito):
+- `.sec` com `bg-ground` explícito (veja a correção abaixo). Cabeçalho "Projetos" + tulipa + "Todos abertos na mesma página, sem setas", como no design.
+- Busca em pílula (com o ícone de lupa do design) por título, descrição e tecnologia, combinada com o filtro.
+- Filtros Todos, Front-end, Back-end, Full stack, DevOps e Dados e IA, com `aria-pressed`, ativo em `bg-tulip`, e contadores fixos (totais por categoria).
+- Lista vertical: grade `.95fr 1.05fr`, com a imagem alternando de lado pelo índice **dentro da lista filtrada** (no HTML, o `:nth-of-type` conta também os itens escondidos). Até 860px, vira 1 coluna.
+- Capa em `aspect-[4/3]` com `rounded-[120px_120px_10px_10px]`, borda `line` e `next/image fill object-cover`. Os SVGs locais são servidos como estão pelo próprio Next (sem `dangerouslyAllowSVG`), sem mexer no `next.config.js`.
+- Selo "Destaque", linha "Tipo • Categoria" com o ponto dourado, título em Cormorant, descrição com `max-w-[54ch]` e chips de stack.
+- Botões na ordem Ver online → Documentação → GitHub (ou GitHub front + GitHub back), filtrados por `isHttpsUrl`, todos com `target="_blank" rel="noopener noreferrer"`.
+- Sem setas, sem pontos de navegação e sem carrossel. Lista vazia mostra "Nada plantado nessa categoria ainda." em Caveat.
+- O `SquiggleUnderline` saiu desta seção.
+
+**3. Capas:**
+- **Prints (Playwright, 1200×900, timeout de 30s, mozjpeg):**
+  - ✅ `public/projects/watchtower.jpg`: 1200×900, 114 KB
+  - ✅ `public/projects/dev-portfolio.jpg`: 1200×900, 57 KB (versão anterior do portfólio, como histórico)
+  - ❌ **Food-Rescue falhou**: `https://food-rescue-1-16nz.onrender.com/api-docs` respondeu **HTTP 503** (o `curl` anterior também estourou 35s; é o Render dormindo). Ele recebeu a capa SVG de fallback.
+- **SVG em `public/projects/covers/`** (13): viewBox 800×600, fundo `#F2EADC`, traço 3 em `#1E3A45`, acentos `#C8453C`/`#DD7C8C`/`#C08318`, um broto com botão de tulipa em cada uma, sem texto e sem logos:
+  `finance-reminder-api` (calendário, sino e moedas), `finance-reminder-frontend` (painel com barras e lista), `ajudasocial-api` (casa com coração e mãos), `client-social-connect` (celular e navegador ligados à casinha), `mlops-anomalias` (ciclo com modelo, medidor e sino), `observabilidade` (medidor, gráfico de linha e sino), `food-rescue` (cesta com folha e frutas; fallback), `project-azimuth` (bússola com pontos de dados), `assistente-virtual-ia` (balões com faíscas), `deteccao-anomalias` (série temporal com ponto em destaque), `dockeditems` (contêiner com caixas), `landing-adac` (wireframes de desktop e celular) e `hypecode-automacoes` (engrenagens ligadas a balões).
+- O campo `image` de cada projeto aponta para o arquivo criado.
+
+**Correção feita durante o teste:** no tema escuro, o texto dos Projetos ficava **quase invisível**. A seção não tinha fundo próprio (no design ela usa o do `body`) e aparecia sobre o `body` branco antigo, com o texto claro do tema escuro. Com `bg-ground`, o contraste ficou em 14,3:1 (título) e 9,0:1 (descrição) no escuro, e 11,2:1 e 7,4:1 no claro.
+
+**Resultado:**
+- `npm run lint`: **passou** (exit 0), "No ESLint warnings or errors".
+- `npm run build`: **passou** (exit 0). `/` com 38.4 kB (126 kB First Load), além de `/_not-found` e `/icon.png`, todas estáticas. Rodei direto no projeto, porque não havia `next dev` ativo.
+- Teste no navegador (`next start` + Playwright):
+  - Contadores: Todos (21), Front-end (8), Back-end (5), Full stack (2), DevOps (2), Dados e IA (4). Cada filtro mostra os projetos certos.
+  - Busca: "fastapi" encontra o MLOps, "Swagger" encontra Watchtower, AjudaSocial e Food-Rescue, e "desaparecidas" encontra o Watchtower. Um termo inexistente mostra a mensagem de vazio.
+  - **21/21 imagens carregadas**, todas com proporção 4:3. As 13 capas SVG são servidas sem otimizador.
+  - Lados alternando (esq, dir, esq, dir). 0 setas ou pontos. Todos os links são https, com `_blank` e `noopener noreferrer`.
+  - Sem erros no console nem respostas HTTP ≥ 400.
+
+**Observações:**
+- Imagens antigas em `public/projects/` que **ficaram sem uso** (não apaguei): `AjudaSocial-API.png`, `AjudaSocial.png`, `adac-softwares.png`, `avatar_games.png` (sem uso desde a etapa 2), `finance-reminder-api.png`, `finance-reminder-frontend.png`, `foodrescure-api.png`, `observability.png`, `watchtower.png` e `watchtower.-api.png`.
+- Para tentar de novo o print do Food-Rescue quando o Render estiver acordado, basta rodar a captura outra vez e trocar o `image` para `/projects/food-rescue.jpg`.
+- A mensagem de vazio diz "nessa categoria" também quando a busca é que zera o resultado (texto pedido).
+- Em 375px, a rolagem horizontal que já existia (de Certificates) continua (`scrollWidth` 397).
+
+**Arquivos alterados nesta etapa:** `src/data/projects.ts`, `src/components/Projects.tsx`, os novos `public/projects/watchtower.jpg` e `public/projects/dev-portfolio.jpg`, e os 13 novos `public/projects/covers/*.svg`.
+
+---
+
+## 2026-10-23 — Reconciliação da etapa 4 (projetos antigos, duplicatas e imagens originais)
+
+**Pedido:** o `design/dados-portfolio.md` mudou. A seção "Projetos do site atual que NÃO estão nesta lista" agora diz: **manter** (confirmado pela Daiane); (a) duplicata (mesmo repositório ou título parecido) fica com UMA entrada, com os dados do arquivo; (b) se já existe print em `public/projects/`, usá-lo e não criar capa nova; (c) os demais ficam como estão, com a categoria mapeada. Comparar pelo git o `projects.ts` de antes da etapa 4, restaurar o que foi removido, associar as imagens originais, apagar capas e capturas da etapa 4 que ficarem sem uso, garantir só as 5 categorias e contadores corretos, sem mexer no layout. Rodar lint e build.
+
+**1. Comparação pelo git** (`git show HEAD:my-portfolio/src/data/projects.ts`, último commit do arquivo: dd599f4, com 15 projetos; `git diff HEAD`):
+- **Antigos que continuam existindo (12):** SkyHawk Drone Systems, Ajuda Social API → `ajudasocial-api`, Social Connect Client → `client-social-connect`, Food Rescue API → `food-rescue`, Study Manager API, Observability Challenge → `observabilidade`, AWS EC2 Storage Project, BreakFree, Finance Reminder Frontend, Finance Reminder API, Landing Page ADAC → `landing-adac` e Máquina de Turing.
+- **Antigos removidos na etapa 4:** só o **Watchtower Backend API**, que foi fundido no `watchtower`. Como é duplicata pela regra (a), **continua fundido** (o repositório `watchtower-backend` é o botão "GitHub back"). Nenhum outro projeto antigo tinha sumido, então não houve nada a restaurar.
+- **Duplicatas (fica uma entrada, com os dados do arquivo):**
+  1. **Watchtower Platform + Watchtower Backend API → `watchtower`** (mesmos repositórios, `watchtower-frontend` e `watchtower-backend`).
+  2. **Nexus Dev Portfolio → `dev-portfolio`** (título parecido). Além disso, o print original `nexus-dev.png` mostra **o portfólio antigo da Daiane** (o mesmo hero que a captura de `dev-portfolio-murex-phi.vercel.app`), e o repositório `DaihSeven/Nexus-Dev` responde **404** na API do GitHub (privado ou apagado; renomeado daria redirecionamento). A entrada "Nexus Dev Portfolio", que a etapa 4 tinha mantido, foi removida e o `dev-portfolio` ficou com o print dela.
+  - Não considerei duplicata "Detecção de Anomalias" × "Detecção de Anomalias como Serviço (MLOps)": os dois estão no arquivo como itens separados, com repositórios diferentes.
+
+**2–3. Imagens originais** (abri as 16 PNGs de `public/projects/` numa prancha com os nomes e associei cada uma pelo conteúdo):
+- Agora usam print original: `watchtower` → `watchtower.png`, `finance-reminder-api` → `finance-reminder-api.png`, `finance-reminder-frontend` → `finance-reminder-frontend.png`, `ajudasocial-api` → `AjudaSocial-API.png` (Swagger), `client-social-connect` → `AjudaSocial.png` (front "Ajuda Social – Conectando"), `observabilidade` → `observability.png`, `food-rescue` → `foodrescure-api.png` (Swagger "Sistema de Doações e Impacto"), `landing-adac` → `adac-softwares.png` e `dev-portfolio` → `nexus-dev.png`.
+- **Apagados por terem ficado sem uso** (criados na etapa 4 e sem referência em `src/`): `public/projects/watchtower.jpg`, `public/projects/dev-portfolio.jpg` e `public/projects/covers/{finance-reminder-api, finance-reminder-frontend, ajudasocial-api, client-social-connect, observabilidade, food-rescue, landing-adac}.svg`.
+- **Capas SVG que continuam** (projetos sem print original): `mlops-anomalias`, `project-azimuth`, `assistente-virtual-ia`, `deteccao-anomalias`, `dockeditems` e `hypecode-automacoes`.
+- **Originais sem uso (não apagados):** `avatar_games.png` (avatar do Hero antigo) e `watchtower.-api.png` (Swagger da API do Watchtower; o card único usa o print do front).
+
+**4. Categorias:** só `frontend`, `backend`, `fullstack`, `devops` e `dados-ia`, sem "mobile". Mapeamento dos antigos mantidos: Study Manager API (Backend → `backend`), AWS EC2 Storage (DevOps → `devops`), BreakFree (Frontend → `frontend`) e Máquina de Turing (Frontend → `frontend`).
+
+**5. Contadores:** são calculados a partir da lista (`projects.reduce`), então refletem a lista final. `Projects.tsx` não foi alterado.
+
+**Resultado:**
+- `npm run lint`: **passou** (exit 0), "No ESLint warnings or errors".
+- `npm run build`: **passou** (exit 0), `/` com 38.3 kB (126 kB First Load). Rodei numa cópia no scratchpad, porque havia um `next dev` do usuário ativo na porta 3000.
+- Validação: 20 projetos, todas as imagens existem, nenhuma imagem repetida e nenhuma categoria inválida.
+- No navegador: Todos (20), Front-end (7), Back-end (5), Full stack (2), DevOps (2), Dados e IA (4). O número de itens bate com cada contador. 20/20 imagens carregadas, sem erros no console nem respostas HTTP ≥ 400.
+
+**Tabela final:**
+
+| id | origem | imagem usada |
+|---|---|---|
+| skyhawk-drone-systems | ambos | /projects/skyhawksite.png |
+| watchtower | ambos (2 antigos fundidos) | /projects/watchtower.png |
+| finance-reminder-api | ambos | /projects/finance-reminder-api.png |
+| finance-reminder-frontend | ambos | /projects/finance-reminder-frontend.png |
+| ajudasocial-api | ambos | /projects/AjudaSocial-API.png |
+| client-social-connect | ambos | /projects/AjudaSocial.png |
+| mlops-anomalias | arquivo | /projects/covers/mlops-anomalias.svg |
+| observabilidade | ambos | /projects/observability.png |
+| food-rescue | ambos | /projects/foodrescure-api.png |
+| project-azimuth | arquivo | /projects/covers/project-azimuth.svg |
+| assistente-virtual-ia | arquivo | /projects/covers/assistente-virtual-ia.svg |
+| deteccao-anomalias | arquivo | /projects/covers/deteccao-anomalias.svg |
+| dockeditems | arquivo | /projects/covers/dockeditems.svg |
+| landing-adac | ambos | /projects/adac-softwares.png |
+| dev-portfolio | ambos (Nexus Dev Portfolio fundido) | /projects/nexus-dev.png |
+| hypecode-automacoes | arquivo | /projects/covers/hypecode-automacoes.svg |
+| study-manager-api | antigo | /projects/study-manager.png |
+| aws-ec2-storage | antigo | /projects/aws-storage.png |
+| breakfree | antigo | /projects/breakfree.png |
+| maquina-de-turing | antigo | /projects/maquina-de-turing.png |
+
+**Observações:**
+- `maquina-de-turing.png` tem só 400×160 (muito larga). Na capa 4:3 com `object-cover`, ela é bastante cortada e ampliada. Não mexi no layout, como pedido. Vale trocar por um print maior.
+- Se o Nexus Dev Portfolio for de fato outro projeto (com outro repositório), dá para restaurá-lo com o print `nexus-dev.png` e devolver o `dev-portfolio.jpg`, recapturando o site.
+
+**Arquivos alterados nesta etapa:** `src/data/projects.ts`. Os 2 `.jpg` e as 7 capas SVG listados acima foram apagados.
+
+---

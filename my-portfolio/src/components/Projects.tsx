@@ -1,303 +1,196 @@
 'use client'
 
-import { useState } from 'react'
-import { projects } from '@/data/projects'
-import { Search, ExternalLink, Github, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react'
+import { useMemo, useState } from 'react'
 import Image from 'next/image'
-import SquiggleUnderline from '@/components/decor/SquiggleUnderline'
+import { projects, projectCategories, type Project, type ProjectCategory } from '@/data/projects'
+import { TulipIcon } from '@/components/icons'
 
-// Só aceita links http(s) válidos (ex.: evita "Privado do cliente" virar um link quebrado)
-const isValidUrl = (value?: string) => {
+type Filter = ProjectCategory | 'todos'
+
+const kindLabels: Record<Project['kind'], string> = {
+  pessoal: 'Pessoal',
+  freelance: 'Freelance',
+  equipe: 'Projeto em equipe',
+}
+
+const categoryLabel = (category: ProjectCategory) =>
+  projectCategories.find((c) => c.value === category)?.label ?? category
+
+// Só aceita links https válidos (ex.: evita "Privado do cliente" virar um link quebrado)
+const isHttpsUrl = (value?: string): value is string => {
   if (!value) return false
   try {
-    const url = new URL(value)
-    return url.protocol === 'http:' || url.protocol === 'https:'
+    return new URL(value).protocol === 'https:'
   } catch {
     return false
   }
 }
-//Se você entrou aqui para analisar o código perceberá muitos comentários sobre o que é cada parte do código, isso para uma aprendiz de nextjs é muito importante, MAS lembre-se para ambiente produtivo e empresarial não é recomendado, e sim documentação!
+
+// Botões na ordem: Ver online, Documentação e GitHub (ou GitHub front e back)
+function projectLinks(project: Project) {
+  const links = [
+    { label: 'Ver online', href: project.demoUrl },
+    { label: 'Documentação', href: project.docsUrl },
+    ...(project.githubBack
+      ? [
+          { label: 'GitHub front', href: project.github },
+          { label: 'GitHub back', href: project.githubBack },
+        ]
+      : [{ label: 'GitHub', href: project.github }]),
+  ]
+  return links.filter((link): link is { label: string; href: string } => isHttpsUrl(link.href))
+}
+
+const counts = projects.reduce<Record<Filter, number>>(
+  (acc, project) => ({ ...acc, [project.category]: acc[project.category] + 1 }),
+  { todos: projects.length, frontend: 0, backend: 0, fullstack: 0, devops: 0, 'dados-ia': 0 }
+)
+
+const filters: { value: Filter; label: string }[] = [{ value: 'todos', label: 'Todos' }, ...projectCategories]
+
+const focusRing = 'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-gold'
+
 export default function Projects() {
   const [searchTerm, setSearchTerm] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState<string>('all')
-  const [currentProject, setCurrentProject] = useState(0)
-  const [imageLoading, setImageLoading] = useState(true)
-  const [imageError, setImageError] = useState(false)
+  const [filter, setFilter] = useState<Filter>('todos')
 
-  const categories = ['all', 'Frontend', 'Backend', 'Full Stack', 'Mobile', 'DevOps']
-
-  // Filtro de projetos
-  const filteredProjects = projects.filter(project => {
-    const matchesSearch = 
-      project.technologies.some(tech =>
-        tech.toLowerCase().includes(searchTerm.toLowerCase())
-      ) || 
-      project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      project.description.toLowerCase().includes(searchTerm.toLowerCase())
-    
-    const matchesCategory = selectedCategory === 'all' || project.category === selectedCategory
-
-    return matchesSearch && matchesCategory
-  })
-
-  const displayedProject = filteredProjects[currentProject] || filteredProjects[0]
-
-  const nextProject = () => {
-    setImageLoading(true)
-    setImageError(false)
-    setCurrentProject((prev) => (prev + 1) % filteredProjects.length)
-  }
-
-  const prevProject = () => {
-    setImageLoading(true)
-    setImageError(false)
-    setCurrentProject((prev) => (prev - 1 + filteredProjects.length) % filteredProjects.length)
-  }
-
-  const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category)
-    setCurrentProject(0)
-    setImageLoading(true)
-    setImageError(false)
-  }
+  // Busca por título, descrição e tecnologia, combinada com o filtro de categoria
+  const visibleProjects = useMemo(() => {
+    const query = searchTerm.trim().toLowerCase()
+    return projects.filter((project) => {
+      const matchesFilter = filter === 'todos' || project.category === filter
+      const matchesSearch =
+        !query ||
+        project.title.toLowerCase().includes(query) ||
+        project.description.toLowerCase().includes(query) ||
+        project.technologies.some((tech) => tech.toLowerCase().includes(query))
+      return matchesFilter && matchesSearch
+    })
+  }, [searchTerm, filter])
 
   return (
-    <section id="projetos" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
-      <div className="max-w-6xl mx-auto">
-        <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 text-gray-900">
-          Projetos
-        </h2>
-        <SquiggleUnderline className="block w-28 h-3 mx-auto mb-12 text-rose-500" />
+    // bg-ground explícito: no design a seção usa o fundo do body, que aqui ainda é o branco antigo
+    <section id="projetos" className="sec bg-ground font-karla text-[17px] leading-[1.65] text-body">
+      <div className="mx-auto w-[min(1120px,100%_-_2.5rem)]">
+        <div className="mb-[2.4rem] flex flex-wrap items-baseline gap-4">
+          <h2 className="font-display text-[clamp(2.1rem,4.6vw,3.2rem)] font-semibold leading-[1.08] tracking-[-.01em] text-ink">
+            Projetos
+          </h2>
+          <TulipIcon className="h-5 w-5 flex-none self-center text-tulip" />
+          <p className="m-0 text-[.95rem] text-muted">Todos abertos na mesma página, sem setas</p>
+        </div>
 
-        {/* Filtros */}
-        <div className="space-y-6 mb-12">
-          {/* Busca por Tecnologia */}
-          <div className="relative max-w-2xl mx-auto">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-rose-400" size={20} />
+        {/* Busca e filtros */}
+        <div className="mb-[2.4rem] flex flex-wrap items-center gap-[.8rem]">
+          <label className="flex flex-[1_1_260px] items-center gap-[.6rem] rounded-full border border-line bg-surface px-[1.1rem] py-[.6rem] focus-within:border-rose">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" className="h-[17px] w-[17px] flex-none text-muted" aria-hidden="true">
+              <circle cx="11" cy="11" r="6.5" />
+              <path d="M16 16l4.5 4.5" />
+            </svg>
             <input
-              type="text"
-              placeholder="Buscar projetos por tecnologia, título ou descrição..."
+              type="search"
               value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value)
-                setCurrentProject(0)
-                setImageLoading(true)
-                setImageError(false)
-              }}
-              className="w-full pl-12 pr-4 py-4 rounded-full border-2 border-gray-200 bg-white focus:border-rose-500 focus:outline-none shadow-lg"
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Buscar por tecnologia, título ou descrição"
+              aria-label="Buscar projetos"
+              className="w-full border-0 bg-transparent text-[.95rem] text-ink outline-none placeholder:text-muted"
             />
-          </div>
+          </label>
 
-          {/* Filtro por Categoria */}
-          <div className="flex flex-wrap justify-center gap-3">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => handleCategoryChange(category)}
-                className={`px-6 py-2 rounded-full font-medium transition-all ${
-                  selectedCategory === category
-                    ? 'bg-rose-600 text-white shadow-lg shadow-rose-500/50'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200'
-                }`}
-              >
-                {category === 'all' ? 'Todos' : category}
-              </button>
-            ))}
+          <div className="flex flex-wrap gap-2" role="group" aria-label="Filtrar projetos por categoria">
+            {filters.map(({ value, label }) => {
+              const active = filter === value
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => setFilter(value)}
+                  aria-pressed={active}
+                  className={`rounded-full border px-4 py-[.44rem] text-[.88rem] transition-colors duration-200 ${focusRing} ${
+                    active ? 'border-tulip bg-tulip text-[#FFF8F2]' : 'border-line text-body hover:border-rose hover:text-tulip'
+                  }`}
+                >
+                  {label}
+                  <small className="ml-[.35rem] opacity-65">{counts[value]}</small>
+                </button>
+              )
+            })}
           </div>
         </div>
 
-        {/* Carrossel de Projetos */}
-        {filteredProjects.length > 0 && displayedProject ? (
-          <div className="relative">
-            {/* Card em duas colunas no desktop (imagem | conteúdo), empilhado no mobile */}
-            <div className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100 grid grid-cols-1 lg:grid-cols-2 lg:items-center">
-              {/* Imagem cara Projeto - proporção 16:9 */}
-              <div className="relative w-full aspect-video bg-gradient-to-br from-rose-500 to-rose-900 overflow-hidden group">
-                {/* Loading Spinner */}
-                {imageLoading && !imageError && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-rose-500 to-rose-900 z-10">
-                    <div className="flex flex-col items-center gap-4">
-                      <div className="w-16 h-16 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
-                      <p className="text-white font-medium">Carregando projeto...</p>
+        {/* Lista vertical: imagem e texto alternam de lado */}
+        {visibleProjects.length > 0 ? (
+          <div className="grid gap-[3.2rem]">
+            {visibleProjects.map((project, index) => {
+              const links = projectLinks(project)
+              const imageRight = index % 2 === 1
+              return (
+                <article
+                  key={project.id}
+                  className="grid grid-cols-[.95fr_1.05fr] items-center gap-[clamp(1.5rem,4vw,3rem)] max-[860px]:grid-cols-1"
+                >
+                  <div className={`relative ${imageRight ? 'order-2 max-[860px]:order-none' : ''}`}>
+                    <div className="relative aspect-[4/3] overflow-hidden rounded-[120px_120px_10px_10px] border border-line bg-surface-2">
+                      <Image
+                        src={project.image}
+                        alt={`Capa do projeto ${project.title}`}
+                        fill
+                        sizes="(max-width: 860px) 100vw, 520px"
+                        className="object-cover"
+                      />
                     </div>
+                    {project.featured && (
+                      <span className="absolute left-4 top-4 rounded-full border border-line bg-surface px-[.7rem] py-[.2rem] text-[.76rem] text-tulip">
+                        Destaque
+                      </span>
+                    )}
                   </div>
-                )}
 
-                {/*KEY ÚNICA força o Next.js a destruir e recriar o componente ao trocar de projeto. MAS ainda está om problema de carregar, talvez com o deploy se ajeite*/}
-                {!imageError ? (
-                  <Image
-                    key={`project-${displayedProject.id}-${currentProject}`}
-                    src={displayedProject.image}
-                    alt={displayedProject.title}
-                    fill
-                    priority
-                    sizes="(max-width: 1024px) 100vw, 640px"
-                    className={`object-cover transition-all duration-500 ${
-                      imageLoading ? 'opacity-0 scale-110' : 'opacity-100 scale-100 group-hover:scale-110'
-                    }`}
-                    onLoad={() => setImageLoading(false)}
-                    onError={() => {
-                      setImageLoading(false)
-                      setImageError(true)
-                    }}
-                  />
-                ) : (
-                  // Fallback se imagem falhar
-                  <div className="absolute inset-0 bg-gradient-to-br from-rose-500 to-rose-900 flex flex-col items-center justify-center text-white p-8">
-                    <div className="text-7xl mb-6">🚀</div>
-                    <h3 className="text-4xl font-bold mb-2 text-center">{displayedProject.title}</h3>
-                    <p className="text-rose-100 text-center max-w-md">{displayedProject.category}</p>
+                  <div>
+                    <p className="mb-2 flex items-center gap-[.6rem] text-[.85rem] text-muted">
+                      {kindLabels[project.kind]}
+                      <span className="h-[5px] w-[5px] rounded-full bg-gold" aria-hidden="true" />
+                      {categoryLabel(project.category)}
+                    </p>
+                    <h3 className="mb-2 font-display text-[1.35rem] font-semibold leading-[1.25] text-ink">{project.title}</h3>
+                    <p className="mb-4 max-w-[54ch]">{project.description}</p>
+
+                    <ul className="m-0 mb-[1.3rem] mt-4 flex list-none flex-wrap gap-[.45rem] p-0" aria-label="Tecnologias">
+                      {project.technologies.map((tech) => (
+                        <li key={tech} className="rounded-full border border-line px-[.72rem] py-[.24rem] text-[.82rem] text-body">
+                          {tech}
+                        </li>
+                      ))}
+                    </ul>
+
+                    {project.nextTechnologies && (
+                      <p className="-mt-2 mb-[1.3rem] text-[.85rem] text-muted">
+                        Próximas etapas: {project.nextTechnologies.join(', ')}
+                      </p>
+                    )}
+
+                    {links.length > 0 && (
+                      <div className="flex flex-wrap gap-[1.3rem] text-[.93rem]">
+                        {links.map((link) => (
+                          <a
+                            key={link.label}
+                            href={link.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`rounded border-b border-transparent pb-[2px] text-tulip no-underline hover:border-tulip ${focusRing}`}
+                          >
+                            {link.label}
+                          </a>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                )}
-
-                {/* Overlay escuro */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none"></div>
-                
-                {/* Badges sobre a imagem */}
-                <div className="absolute top-4 left-4 flex gap-2 z-20">
-                  {displayedProject.featured && (
-                    <span className="flex items-center gap-1 bg-rose-600 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg backdrop-blur-sm">
-                      <Sparkles size={14} />
-                      Destaque
-                    </span>
-                  )}
-                  <span className={`px-3 py-1 rounded-full text-sm font-semibold shadow-lg backdrop-blur-sm ${
-                    displayedProject.status === 'completed' 
-                      ? 'bg-green-600 text-white' 
-                      : 'bg-yellow-600 text-white'
-                  }`}>
-                    {displayedProject.status === 'completed' ? 'Concluído' : 'Em Andamento'}
-                  </span>
-                </div>
-
-                {/* Categoria */}
-                <div className="absolute top-4 right-4 z-20">
-                  <span className="bg-black/50 backdrop-blur-sm text-rose-300 px-4 py-1 rounded-full text-sm font-medium border border-rose-500/30">
-                    {displayedProject.category}
-                  </span>
-                </div>
-
-                {/* Título sobre a imagem */}
-                <div className="absolute bottom-6 left-6 z-20">
-                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-2 drop-shadow-lg">
-                    {displayedProject.title}
-                  </h3>
-                </div>
-              </div>
-              
-              {/* Conteúdo */}
-              <div className="p-6 md:p-8 bg-white">
-                <p className="text-gray-700 mb-6 leading-relaxed text-lg">
-                  {displayedProject.description}
-                </p>
-                
-                {/* Tecnologias */}
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {displayedProject.technologies.map((tech) => (
-                    <span
-                      key={tech}
-                      className="px-4 py-2 bg-rose-50 text-rose-700 rounded-full text-sm font-medium border border-rose-200 hover:bg-rose-100 transition-colors"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Links */}
-                <div className="flex flex-wrap gap-4">
-                  {isValidUrl(displayedProject.github) && (
-                    <a
-                      href={displayedProject.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-full font-semibold transition-all shadow-md hover:shadow-lg"
-                    >
-                      <Github size={18} />
-                      GitHub
-                    </a>
-                  )}
-                  {displayedProject.demoUrl && (
-                    <a
-                      href={displayedProject.demoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 bg-rose-600 hover:bg-rose-700 text-white px-6 py-3 rounded-full font-semibold transition-all shadow-lg shadow-rose-500/50 hover:shadow-xl hover:shadow-rose-500/70"
-                    >
-                      <ExternalLink size={18} />
-                      Ver Demo
-                    </a>
-                  )}
-                  {!displayedProject.demoUrl && displayedProject.link && (
-                    <a
-                      href={displayedProject.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 bg-rose-600 hover:bg-rose-700 text-white px-6 py-3 rounded-full font-semibold transition-all shadow-lg shadow-rose-500/50 hover:shadow-xl hover:shadow-rose-500/70"
-                    >
-                      <ExternalLink size={18} />
-                      Ver Projeto
-                    </a>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Controles do Carrossel */}
-            {filteredProjects.length > 1 && (
-              <>
-                <button
-                  onClick={prevProject}
-                  disabled={imageLoading}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-rose-600 hover:bg-rose-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white p-4 rounded-full shadow-2xl hover:shadow-rose-500/50 transition-all z-10"
-                  aria-label="Projeto anterior"
-                >
-                  <ChevronLeft size={24} />
-                </button>
-                <button
-                  onClick={nextProject}
-                  disabled={imageLoading}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-rose-600 hover:bg-rose-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white p-4 rounded-full shadow-2xl hover:shadow-rose-500/50 transition-all z-10"
-                  aria-label="Próximo projeto"
-                >
-                  <ChevronRight size={24} />
-                </button>
-              </>
-            )}
-
-            {/* Indicadores */}
-            <div className="flex justify-center gap-2 mt-8">
-              {filteredProjects.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => {
-                    setImageLoading(true)
-                    setImageError(false)
-                    setCurrentProject(index)
-                  }}
-                  disabled={imageLoading}
-                  className={`h-2 rounded-full transition-all ${
-                    index === currentProject
-                      ? 'bg-rose-600 w-8'
-                      : 'bg-gray-300 w-2 hover:bg-gray-400'
-                  }`}
-                  aria-label={`Ir para projeto ${index + 1}`}
-                />
-              ))}
-            </div>
-
-            {/* Contador */}
-            <div className="text-center mt-4 text-gray-600">
-              <span className="text-rose-600 font-bold text-lg">{currentProject + 1}</span> 
-              <span className="text-gray-400 mx-2">/</span> 
-              <span className="text-gray-600">{filteredProjects.length}</span>
-            </div>
+                </article>
+              )
+            })}
           </div>
         ) : (
-          <div className="text-center py-20 bg-white rounded-2xl shadow-lg">
-            <div className="text-6xl mb-4">🔍</div>
-            <p className="text-gray-700 text-lg mb-2 font-semibold">Nenhum projeto encontrado</p>
-            <p className="text-gray-500">Tente ajustar os filtros ou buscar por outra tecnologia</p>
-          </div>
+          <p className="py-8 font-hand text-[1.3rem] text-muted">Nada plantado nessa categoria ainda.</p>
         )}
       </div>
     </section>

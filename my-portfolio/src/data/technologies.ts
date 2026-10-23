@@ -1,8 +1,8 @@
 import type { IconType } from 'react-icons'
 import {
-  SiSpringboot, SiNodedotjs, SiExpress, SiPython, SiJsonwebtokens, SiSwagger,
+  SiSpringboot, SiNodedotjs, SiExpress, SiPython, SiFlask, SiJsonwebtokens, SiSwagger,
   SiReact, SiNextdotjs, SiTypescript, SiTailwindcss, SiHtml5, SiCss, SiFramer,
-  SiPostgresql, SiMongodb, SiPrisma,
+  SiPostgresql, SiMongodb, SiMysql, SiRedis, SiPrisma,
   SiDocker, SiGooglecloud, SiLinux, SiGit, SiGithub, SiPrometheus, SiGrafana, SiGoogle,
 } from 'react-icons/si'
 // Java, AWS e bcrypt não existem (ou foram removidos) no Simple Icons, então vêm do Font Awesome
@@ -26,6 +26,7 @@ export const technologies: Technology[] = [
   { name: 'Node.js', category: 'Backend', icon: SiNodedotjs },
   { name: 'Express', category: 'Backend', icon: SiExpress },
   { name: 'Python', category: 'Backend', icon: SiPython },
+  { name: 'Flask', category: 'Backend', icon: SiFlask },
   { name: 'JWT', category: 'Backend', icon: SiJsonwebtokens },
   { name: 'bcrypt', category: 'Backend', icon: FaLock },
   { name: 'Swagger', category: 'Backend', icon: SiSwagger },
@@ -42,6 +43,8 @@ export const technologies: Technology[] = [
   // Dados
   { name: 'PostgreSQL', category: 'Dados', icon: SiPostgresql },
   { name: 'MongoDB', category: 'Dados', icon: SiMongodb },
+  { name: 'MySQL', category: 'Dados', icon: SiMysql },
+  { name: 'Redis', category: 'Dados', icon: SiRedis },
   { name: 'Prisma', category: 'Dados', icon: SiPrisma },
 
   // Infra/Cloud

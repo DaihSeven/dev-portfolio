@@ -1,16 +1,7 @@
 'use client'
 
-import { technologies, type TechnologyCategory } from '@/data/technologies'
 import { useInView } from '@/hooks/useInView'
 import { TulipIcon, ShieldIcon, TeaIcon, BookIcon, CakeIcon, SprigIcon, PawIcon } from '@/components/icons'
-
-// Ordem de exibição das categorias no bloco único de Tecnologias
-const displayOrder: TechnologyCategory[] = ['Backend', 'Infra/Cloud', 'Frontend', 'Dados']
-
-// Concatena as categorias nessa sequência, mantendo dentro de cada uma a ordem do array de dados
-const orderedTechnologies = displayOrder.flatMap((category) =>
-  technologies.filter((tech) => tech.category === category)
-)
 
 const likes = [
   { icon: ShieldIcon, text: 'Torcedora fanática do Corinthians' },
@@ -71,26 +62,6 @@ export default function About() {
               </li>
             ))}
           </ul>
-        </div>
-      </div>
-
-      {/* Tecnologias em container mais largo (max-w-5xl) que o texto acima */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
-        <h3 className="text-3xl font-bold text-center mb-8 text-ink">
-          Tecnologias
-        </h3>
-        <div className="bg-white rounded-xl shadow-md p-4 border border-rose-100">
-          <div className="flex flex-wrap gap-2">
-            {orderedTechnologies.map(({ name, icon: Icon }) => (
-              <div
-                key={name}
-                className="flex items-center gap-2 bg-rose-50 border border-rose-100 rounded-lg px-3 py-2 hover:border-rose-300 hover:shadow-sm transition-all"
-              >
-                <Icon className="w-4 h-4 text-rose-500 flex-shrink-0" aria-hidden />
-                <span className="text-sm font-medium text-gray-800 leading-tight">{name}</span>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </section>
