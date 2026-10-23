@@ -1,321 +1,124 @@
-'use client'
+import Image from 'next/image'
+import { GullIcon, TeaIcon, GithubIcon, LinkedinIcon, MailIcon } from '@/components/icons'
 
-import { ArrowRight, Github, Linkedin, Mail } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import ArcFrame from '@/components/decor/ArcFrame'
-import HeartOutline from '@/components/decor/HeartOutline'
-import Sparkle from '@/components/decor/Sparkle'
-import HandNote from '@/components/decor/HandNote'
-//Se você entrou aqui para analisar o código perceberá muitos comentários sobre o que é cada parte do código, isso para uma aprendiz de nextjs é muito importante, MAS lembre-se para ambiente produtivo e empresarial não é recomendado, e sim documentação!
+const socials = [
+  { label: 'GitHub', href: 'https://github.com/DaihSeven', icon: GithubIcon },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/daianebarbosak/', icon: LinkedinIcon },
+  { label: 'E-mail', href: 'mailto:developerdaiane@gmail.com', icon: MailIcon },
+]
+
+const focusRing = 'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-gold'
+
+// Fundo de estrelas do design (--tile), esmaecido por uma máscara radial à direita
+const tileMask = 'radial-gradient(120% 85% at 78% 30%, #000 10%, transparent 72%)'
+
 export default function Hero() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY })
-    }
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
-  }, [])
-
-  // Partículas fixas
-  const particles = [
-    { left: '10%', top: '20%', delay: '0s', duration: '8s' },
-    { left: '25%', top: '60%', delay: '1s', duration: '10s' },
-    { left: '40%', top: '30%', delay: '2s', duration: '12s' },
-    { left: '55%', top: '70%', delay: '0.5s', duration: '9s' },
-    { left: '70%', top: '40%', delay: '1.5s', duration: '11s' },
-    { left: '85%', top: '15%', delay: '2.5s', duration: '7s' },
-    { left: '15%', top: '80%', delay: '3s', duration: '13s' },
-    { left: '90%', top: '55%', delay: '0.8s', duration: '10s' },
-    { left: '5%', top: '45%', delay: '1.2s', duration: '9s' },
-    { left: '60%', top: '10%', delay: '2.2s', duration: '11s' },
-    { left: '35%', top: '85%', delay: '0.3s', duration: '8s' },
-    { left: '75%', top: '25%', delay: '1.8s', duration: '12s' },
-    { left: '20%', top: '50%', delay: '2.8s', duration: '10s' },
-    { left: '50%', top: '65%', delay: '0.6s', duration: '9s' },
-    { left: '80%', top: '75%', delay: '1.4s', duration: '11s' },
-    { left: '30%', top: '35%', delay: '2.4s', duration: '13s' },
-    { left: '65%', top: '90%', delay: '0.9s', duration: '8s' },
-    { left: '45%', top: '5%', delay: '1.7s', duration: '10s' },
-    { left: '95%', top: '60%', delay: '2.6s', duration: '12s' },
-    { left: '12%', top: '70%', delay: '0.4s', duration: '9s' },
-  ]
-
   return (
-    <section
-      id="inicio"
-      className="min-h-screen flex items-center justify-center bg-black relative overflow-hidden"
-    >
-      {/* Linhas animadas de fundo */}
-      <div className="absolute inset-0 overflow-hidden">
-        {/* Linhas horizontais */}
-        <div className="absolute w-full h-[2px] bg-gradient-to-r from-transparent via-rose-500 to-transparent animate-slide-right top-[20%]"></div>
-        <div
-          className="absolute w-full h-[2px] bg-gradient-to-r from-transparent via-rose-400 to-transparent animate-slide-left top-[40%]"
-          style={{ animationDelay: "1s" }}
-        ></div>
-        <div
-          className="absolute w-full h-[2px] bg-gradient-to-r from-transparent via-rose-600 to-transparent animate-slide-right top-[60%]"
-          style={{ animationDelay: "2s" }}
-        ></div>
-        <div
-          className="absolute w-full h-[2px] bg-gradient-to-r from-transparent via-rose-500 to-transparent animate-slide-left top-[80%]"
-          style={{ animationDelay: "0.5s" }}
-        ></div>
+    // .dome: fim da seção em curva. O padding-bottom do .dome é mantido (no HTML ele é
+    // zerado pelo .hero e a curva corta os ícones sociais).
+    <section id="inicio" className="dome overflow-hidden pt-[clamp(3rem,7vw,5rem)] font-karla text-[17px] leading-[1.65] text-body">
+      <div
+        className="pointer-events-none absolute inset-0 bg-tile"
+        style={{ maskImage: tileMask, WebkitMaskImage: tileMask }}
+        aria-hidden="true"
+      />
 
-        {/* Linhas verticais */}
-        <div className="absolute h-full w-[2px] bg-gradient-to-b from-transparent via-rose-500 to-transparent animate-slide-down left-[15%]"></div>
-        <div
-          className="absolute h-full w-[2px] bg-gradient-to-b from-transparent via-rose-400 to-transparent animate-slide-up left-[45%]"
-          style={{ animationDelay: "1.5s" }}
-        ></div>
-        <div
-          className="absolute h-full w-[2px] bg-gradient-to-b from-transparent via-rose-600 to-transparent animate-slide-down left-[75%]"
-          style={{ animationDelay: "0.8s" }}
-        ></div>
+      <div className="relative mx-auto grid w-[min(1120px,100%_-_2.5rem)] grid-cols-[1.05fr_.85fr] items-center gap-[clamp(2rem,5vw,4.5rem)] max-[900px]:grid-cols-1 max-[900px]:gap-12">
+        <div>
+          <p className="mb-4 font-hand text-[1.35rem] leading-[1.2] text-rose">Olá, eu sou</p>
+          <h1 className="mb-[.2rem] mt-[.3rem] font-display text-[clamp(3.2rem,9vw,5.6rem)] font-semibold leading-[1.08] tracking-[-.01em] text-ink">
+            Daiane
+          </h1>
+          <p className="mb-[1.3rem] font-display text-[clamp(1.5rem,3vw,2.1rem)] italic leading-[1.2] text-tulip">
+            Desenvolvedora full stack,
+            <br />
+            com raiz no back-end.
+          </p>
+          <p className="mb-4 max-w-[46ch] text-[1.08rem]">
+            Estudante de Engenharia de Software que gosta de cuidar do que não aparece: a API que responde rápido,
+            o banco bem modelado, o deploy que não acorda ninguém de madrugada. E de ensinar o caminho para quem
+            está chegando.
+          </p>
 
-        {/* Grid de pontos */}
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle, rgba(244, 63, 94, 0.1) 1px, transparent 1px)",
-            backgroundSize: "50px 50px",
-          }}
-        ></div>
-
-        {/* Efeito de luz seguindo o mouse */}
-        {mounted && (
-          <div
-            className="absolute w-96 h-96 bg-rose-500/20 rounded-full blur-3xl pointer-events-none transition-all duration-300"
-            style={{
-              left: mousePosition.x - 192,
-              top: mousePosition.y - 192,
-            }}
-          ></div>
-        )}
-      </div>
-
-      {/* Partículas flutuantes */}
-      {mounted && (
-        <div className="absolute inset-0">
-          {particles.map((particle, i) => (
-            <div
-              key={i}
-              className="absolute w-2 h-2 bg-rose-500/30 rounded-full animate-float"
-              style={{
-                left: particle.left,
-                top: particle.top,
-                animationDelay: particle.delay,
-                animationDuration: particle.duration,
-              }}
-            ></div>
-          ))}
-        </div>
-      )}
-
-      {/* Hora do Conteúdo */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div className="text-white space-y-6">
-            {/* Badge animado */}
-            <div className="inline-flex items-center gap-2 bg-rose-500/10 border border-rose-500/20 rounded-full px-4 py-2 backdrop-blur-sm">
-              <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-rose-500"></span>
-              </span>
-              <span className="text-sm font-medium text-rose-300">
-                Disponível para projetos
-              </span>
-            </div>
-
-            <div className="space-y-2">
-              <p className="text-lg font-medium text-rose-400 animate-fade-in">
-                Olá, eu sou
-              </p>
-              <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-white via-rose-200 to-rose-400 bg-clip-text text-transparent animate-fade-in-up">
-                Daiane
-              </h1>
-              <p
-                className="text-2xl md:text-3xl font-light text-gray-300 animate-fade-in-up"
-                style={{ animationDelay: "0.1s" }}
-              >
-                Desenvolvedora Full Stack
-              </p>
-            </div>
-
-            <p
-              className="text-lg text-gray-400 leading-relaxed animate-fade-in-up"
-              style={{ animationDelay: "0.2s" }}
+          <div className="mt-[1.8rem] flex flex-wrap items-center gap-[.9rem]">
+            <a
+              href="#projetos"
+              className={`inline-flex items-center gap-[.55rem] rounded-full border border-tulip bg-tulip px-[1.6rem] py-[.8rem] text-[.97rem] font-semibold text-[#FFF8F2] no-underline transition-[background,transform] duration-[250ms] hover:-translate-y-px hover:border-ink hover:bg-ink ${focusRing}`}
             >
-              E graduanda de Engenharia de Software apaixonada por criar experiências digitais incríveis e soluções
-              inovadoras. Especializada em desenvolvimento web moderno com foco
-              em performance e usabilidade.
-            </p>
-
-            <div
-              className="flex flex-wrap gap-4 pt-4 animate-fade-in-up"
-              style={{ animationDelay: "0.3s" }}
+              Ver projetos
+            </a>
+            <a
+              href="#contato"
+              className={`inline-flex items-center gap-[.55rem] rounded-full border border-line px-[1.6rem] py-[.8rem] text-[.97rem] font-semibold text-ink no-underline transition-[border-color,color,transform] duration-[250ms] hover:-translate-y-px hover:border-rose hover:text-tulip ${focusRing}`}
             >
-              <a
-                href="#projetos"
-                className="group bg-rose-600 hover:bg-rose-700 text-white px-8 py-3 rounded-full font-semibold transition-all flex items-center gap-2 shadow-lg shadow-rose-500/50 hover:shadow-xl hover:shadow-rose-500/70 hover:scale-105"
-              >
-                Ver Projetos
-                <ArrowRight
-                  size={20}
-                  className="group-hover:translate-x-1 transition-transform"
-                />
-              </a>
-              <a
-                href="#contato"
-                className="border-2 border-rose-500 text-rose-400 hover:bg-rose-500 hover:text-white px-8 py-3 rounded-full font-semibold transition-all hover:scale-105"
-              >
-                Contato
-              </a>
-            </div>
-
-            <div
-              className="flex gap-4 pt-6 animate-fade-in-up"
-              style={{ animationDelay: "0.4s" }}
-            >
-              <a
-                href="https://github.com/DaihSeven"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group bg-white/5 hover:bg-rose-500 p-3 rounded-full transition-all hover:scale-110 border border-white/10 hover:border-rose-500"
-                aria-label="GitHub"
-              >
-                <Github
-                  size={24}
-                  className="text-gray-400 group-hover:text-white transition-colors"
-                />
-              </a>
-              <a
-                href="https://www.linkedin.com/in/daianebarbosak/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group bg-white/5 hover:bg-rose-500 p-3 rounded-full transition-all hover:scale-110 border border-white/10 hover:border-rose-500"
-                aria-label="LinkedIn"
-              >
-                <Linkedin
-                  size={24}
-                  className="text-gray-400 group-hover:text-white transition-colors"
-                />
-              </a>
-              <a
-                href="bdaih0405@gmail.com"
-                className="group bg-white/5 hover:bg-rose-500 p-3 rounded-full transition-all hover:scale-110 border border-white/10 hover:border-rose-500"
-                aria-label="Email"
-              >
-                <Mail
-                  size={24}
-                  className="text-gray-400 group-hover:text-white transition-colors"
-                />
-              </a>
-            </div>
+              Vamos conversar
+            </a>
           </div>
 
-          {/* Avatar lado direito */}
-          <div
-            className="flex justify-center animate-fade-in"
-            style={{ animationDelay: "0.5s" }}
-          >
-            <div className="relative">
-              {/* Decoração: arco fino atrás da foto */}
-              <ArcFrame className="absolute -inset-3 sm:-inset-6 text-rose-500 pointer-events-none" />
-
-              {/* Círculos animados ao redor */}
-              <div className="absolute inset-0 animate-spin-slow">
-                <div className="w-full h-full border-2 border-rose-500/20 rounded-full"></div>
-              </div>
-              <div className="absolute inset-0 animate-spin-slower">
-                <div
-                  className="w-full h-full border-2 border-rose-400/20 rounded-full"
-                  style={{ borderStyle: "dashed" }}
-                ></div>
-              </div>
-
-              {/* Avatar principal */}
-              <div className="relative w-80 h-80 bg-gradient-to-br from-rose-500 to-rose-900 rounded-full shadow-2xl shadow-rose-500/50 flex items-center justify-center overflow-hidden">
-                <div className="absolute inset-0 bg-black/20"></div>
-                <div className="relative w-32 h-32 animate-float">
-                  <div className="w-full h-full rounded-full bg-gradient-to-br from-rose-400 to-pink-500 border-4 border-white shadow-lg flex items-center justify-center text-white text-4xl">
-                    {/* Fallback  caso o avatar falhe*/}
-                    <span>👩‍💻</span>
-                  </div>
-                  {/* Imagem sobreposta */}
-                  <img
-                    src="/projects/avatar_games.png"
-                    alt="Avatar"
-                    className="absolute inset-0 w-full h-full rounded-full object-cover"
-                    onLoad={() => {
-                      //Vai esconder o fallback quando a imagem carrega
-                      document
-                        .getElementById("fallback")
-                        ?.classList.add("hidden");
-                    }}
-                    onError={(e) => {
-                      // Vai mostrar o fallback quando a imagem falha
-                      document
-                        .getElementById("fallback")
-                        ?.classList.remove("hidden");
-                      e.currentTarget.style.display = "none";
-                    }}
-                  />
-                </div>
-
-                {/* Brilho animado */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent animate-shine"></div>
-              </div>
-
-              {/* Badges flutuantes */}
-              <div
-                className="absolute -right-4 top-20 bg-black/80 backdrop-blur-sm border border-rose-500/50 rounded-lg px-4 py-2 animate-float"
-                style={{ animationDelay: "1s" }}
+          <div className="mt-8 flex gap-[.9rem]">
+            {socials.map(({ label, href, icon: Icon }) => (
+              <a
+                key={label}
+                href={href}
+                aria-label={label}
+                {...(href.startsWith('http') && { target: '_blank', rel: 'noopener noreferrer' })}
+                className={`grid h-[42px] w-[42px] place-items-center rounded-full border border-line text-body transition duration-[250ms] hover:-translate-y-0.5 hover:border-rose hover:text-tulip ${focusRing}`}
               >
-                <p className="text-rose-400 font-bold text-sm">3x AWS</p>
-                <p className="text-gray-400 text-xs">Certificates</p>
-              </div>
-
-              <div
-                className="absolute -left-4 top-10 bg-black/80 backdrop-blur-sm border border-rose-500/50 rounded-lg px-4 py-2 animate-float"
-                style={{ animationDelay: "2s" }}
-              >
-                <p className="text-rose-400 font-bold text-sm">Mentora AWS</p>
-                <p className="text-gray-400 text-xs">2° + n° de alunos certificados 2025</p>
-              </div>
-
-              <div
-                className="absolute -left-4 bottom-20 bg-black/80 backdrop-blur-sm border border-rose-500/50 rounded-lg px-4 py-2 animate-float"
-                style={{ animationDelay: "2s" }}
-              >
-                <p className="text-rose-400 font-bold text-sm">Freelancer</p>
-                <p className="text-gray-400 text-xs">Dev FullStack</p>
-              </div>
-
-              {/* Decorações desenhadas à mão ao redor da foto */}
-              <HeartOutline className="absolute -top-2 right-6 w-9 h-9 rotate-12 text-rose-500 pointer-events-none" />
-              <Sparkle className="absolute -top-6 left-1/3 w-6 h-6 text-butter-400 pointer-events-none" />
-              <Sparkle className="absolute -bottom-4 right-10 w-8 h-8 text-butter-400 pointer-events-none" />
-              <HandNote
-                text="sempre criando"
-                className="absolute -top-16 right-0 sm:-right-6 text-butter-400 pointer-events-none"
-              />
-            </div>
+                <Icon className="h-[18px] w-[18px]" />
+              </a>
+            ))}
           </div>
         </div>
-      </div>
 
-      {/* Indicador de scroll */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <div className="w-6 h-10 border-2 border-rose-500/50 rounded-full flex justify-center pt-2">
-          <div className="w-1 h-3 bg-rose-500 rounded-full animate-scroll"></div>
-        </div>
+        {/* Foto na janela em arco, com flores, gaivota, chá e cards */}
+        <figure className="relative m-0 w-[min(100%,340px)] justify-self-center max-[900px]:order-first max-[900px]:w-[min(100%,280px)]">
+          <GullIcon className="absolute -top-[34px] right-[-10px] h-[21px] w-14 text-ink opacity-50" />
+          <TeaIcon className="absolute left-[-30px] top-[10px] h-11 w-11 text-gold" />
+
+          {/* Flores (antes da moldura no DOM, para ficarem atrás dela como no HTML).
+              Imagens quadradas de 120px no lugar dos espaços de 92px do design: o deslocamento
+              lateral soma os 28px extras para a parte visível ficar igual à do HTML. */}
+          <Image
+            src="/images/lily-flowering-tulips.png"
+            alt="Tulipas"
+            width={360}
+            height={360}
+            sizes="120px"
+            className="absolute bottom-[14px] left-[-84px] h-auto w-[120px] -rotate-6 max-[900px]:left-[-58px] max-[480px]:hidden"
+          />
+          <Image
+            src="/images/white-carnation-flower.png"
+            alt="Cravo branco"
+            width={360}
+            height={360}
+            sizes="120px"
+            className="absolute right-[-76px] top-[40px] h-auto w-[120px] rotate-[5deg] max-[900px]:right-[-54px] max-[480px]:hidden"
+          />
+
+          <div className="relative rounded-[170px_170px_10px_10px] border border-line bg-surface p-[14px] shadow-soft">
+            <Image
+              src="/images/perfil2.jpg"
+              alt="Daiane, desenvolvedora full stack"
+              width={1720}
+              height={2293}
+              priority
+              sizes="(max-width: 900px) 280px, 340px"
+              className="block aspect-[3/4] w-full rounded-[158px_158px_4px_4px] object-cover object-[50%_22%]"
+            />
+            {/* Filete dourado interno da moldura */}
+            <div className="pointer-events-none absolute inset-[7px] rounded-[164px_164px_6px_6px] border border-gold opacity-40" aria-hidden="true" />
+          </div>
+
+          <div className="absolute left-[-70px] top-[34%] rounded-xl border border-line bg-surface px-[.8rem] py-2 text-[.8rem] leading-[1.35] shadow-soft max-[900px]:left-[-18px] max-[480px]:hidden">
+            <b className="block text-[.86rem] text-ink">Mentora AWS</b>
+            Escola da Nuvem, desde 2024
+          </div>
+          <div className="absolute bottom-[22%] right-[-56px] rounded-xl border border-line bg-surface px-[.8rem] py-2 text-[.8rem] leading-[1.35] shadow-soft max-[900px]:right-[-14px] max-[480px]:hidden">
+            <b className="block text-[.86rem] text-ink">3 certificações AWS</b>
+            Cloud Practitioner, SAA e AI
+          </div>
+        </figure>
       </div>
     </section>
-  );
+  )
 }

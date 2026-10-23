@@ -318,3 +318,77 @@ Nenhuma cor nem lógica do carrossel foi alterada.
 **Arquivos alterados nesta etapa:** `src/app/layout.tsx`, `src/app/globals.css`, `tailwind.config.js`, `src/components/Navbar.tsx`, `src/components/Footer.tsx` e o novo `src/components/icons.tsx`.
 
 ---
+
+## 2026-10-22 — Redesign, etapa 2: Hero, flores, ícone da aba, divisão circular, Sobre mim e Jornada
+
+**Pedido:** (1) reescrever o Hero conforme o design (título, subtítulo itálico, texto, botões, sociais, foto `/images/perfil2.jpg` na janela em arco com `next/image`, cards "Mentora AWS" e "3 certificações AWS", gaivota e chá em SVG; remover as animações antigas); (2) flores `lily-flowering-tulips.png` (esquerda, "Tulipas") e `white-carnation-flower.png` (direita, "Cravo branco") nas posições de `.tulip-left` e `.tulip-right`, escondidas abaixo de 480px; (3) confirmar `src/app/icon.png` e remover `favicon.ico`; (4) `.dome` e `.band` como utilitários no `globals.css`; (5) reescrever o "Sobre mim" mantendo o `useInView`; (6) mover Voluntariado, Freelancer e Facilitadora para `src/components/Journey.tsx` (linha do tempo), adicioná-lo após o About e limpar o que sobrou. Rodar `npm run lint` e `npm run build`.
+
+**Verificação das imagens (dimensões reais, lidas com sharp):**
+- `perfil2.jpg`: gravada como 2293×1720 com **EXIF orientation 6** (rotação 90°), **exibida como 1720×2293**. Foi passado `width={1720} height={2293}`. O otimizador do Next aplica a rotação, e a imagem servida veio em retrato (340×453).
+- `lily-flowering-tulips.png` e `white-carnation-flower.png`: 360×360, com fundo transparente (conteúdo visível de 302×320 e 318×337).
+- **O cravo estava em `public/projects/`, não em `public/images/`.** Movi com `git mv` para `public/images/` (não havia referência ao caminho antigo).
+
+**O que foi feito:**
+1. **`Hero.tsx`** (reescrito, agora sem `'use client'`):
+   - `.dome` com o fundo de estrelas `--tile` e a mesma máscara radial do design.
+   - Grade `1.05fr .85fr`, que vira 1 coluna até 900px com a foto em cima.
+   - "Olá, eu sou" em Caveat, "Daiane" em Cormorant, subtítulo em itálico tulip, texto com `max-w-[46ch]`, botões "Ver projetos" / "Vamos conversar" e sociais redondos de 42px com os SVGs do design.
+   - Janela em arco: `rounded-[170px_170px_10px_10px]`, filete dourado interno e foto `aspect-[3/4] object-cover object-[50%_22%]` com `priority`.
+   - Gaivota e copo de chá em SVG. Os dois cards ficam nas posições do design (com ajuste até 900px) e somem abaixo de 480px.
+   - Removidos: linhas deslizando, partículas, brilho que seguia o mouse, círculos girando, indicador de scroll e as decorações `ArcFrame`, `HeartOutline`, `Sparkle` e `HandNote`.
+   - **Diferença proposital:** no HTML, o `.hero` zera o `padding-bottom` do `.dome` e a curva **corta os ícones sociais** (dá para ver no print de referência). Aqui o `padding-bottom` do `.dome` foi mantido, então a curva fica abaixo dos ícones.
+2. **Flores:** `next/image` com 360×360, largura de 120px e altura automática (mantém a proporção). Como os espaços do design têm 92px e as imagens são quadradas com margem transparente, 92px deixava as flores pequenas demais. O deslocamento lateral soma os 28px extras (`left-[-84px]` / `right-[-76px]`, e `-58px` / `-54px` até 900px), para a parte visível ficar igual à do HTML. Rotação de −6° e 5°. Elas vêm antes da moldura no DOM, como no HTML, e ficam atrás dela. Escondidas abaixo de 480px. Sem constantes de "ready" e sem espaços tracejados.
+3. **Ícone da aba:** `src/app/icon.png` existe e o `favicon.ico` **já tinha sido removido** no commit da etapa 1 (7dfb9f7). O build gera a rota `/icon.png` e o HTML recebe `<link rel="icon" href="/icon.png" type="image/png" sizes="860x1280">`. **Atenção:** o arquivo é na verdade **WebP** (com extensão .png) e **não é quadrado** (860×1280). Ele é servido como `image/png`. O Chrome exibe, mas outros navegadores podem não exibir, e ícones não quadrados ficam distorcidos ou com faixas. Recomendo exportar como PNG quadrado de verdade (ex.: 512×512). Não alterei o arquivo.
+4. **`globals.css`:** em `@layer components`, ficaram `.sec` (padding `clamp(4.5rem,9vw,7rem) 0`), `.dome` (relative, z-1, fundo `--ground`, `border-radius: 0 0 50% 50% / 0 0 var(--arc) var(--arc)`, `padding-bottom: calc(var(--arc) + 1rem)`, `margin-bottom: calc(var(--arc) * -1)`) e `.band` (fundo `--surface-2`, `padding-top: calc(var(--arc) + clamp(3.5rem,7vw,5.5rem))`), na mesma ordem do HTML. Por estarem em `components`, as utilidades do Tailwind conseguem sobrescrevê-los.
+5. **`About.tsx`:**
+   - Seção `.sec.band`. Cabeçalho "Sobre mim" + tulipa + "Engenharia de Software, 8° período" (como no design; o texto antigo dizia 7°).
+   - Dois parágrafos, citação em Cormorant itálico com borda rose e lista de 6 gostos com os SVGs do design: escudo, chá, livro, bolo, raminho e pata (o design acrescenta "Gatos e cachorros, sempre").
+   - `useInView` aplicado só na entrada do bloco (fade-in subindo, `motion-safe`).
+   - O bloco "Tecnologias" continua no fim da seção, sem mudanças, exceto o título, que passou de `text-gray-800` para `text-ink`, porque ficava invisível no tema escuro sobre o novo fundo.
+6. **`Journey.tsx`** (novo): `.sec.dome` com `id="jornada"`, cabeçalho "Jornada" + tulipa + "Onde venho aprendendo e ensinando", e linha do tempo vertical (`border-l`, ponto de 12px com borda rose e o atual preenchido em tulip).
+   - A ordem segue **o comentário que está no HTML** ("colocar o voluntariado da escola da nuvem por primeiro, seguido dos freelancers e depois o do google"): Escola da Nuvem (atual) → SkyHawk → HypeCode → Google Cloud Arcade. Os textos e datas são os do design (ex.: SkyHawk "Março a Junho de 2026", HypeCode "Março a Setembro de 2026").
+   - Adicionado em `page.tsx` logo após `<About />`.
+   - Limpeza no `About.tsx`: saíram os blocos de Voluntariado, Facilitadora e Freelancer, o "Aberta a oportunidades", o array `hobbies`, `revealItem`, os ícones Lucide e o `SquiggleUnderline`.
+- **`icons.tsx`:** novos `GullIcon`, `TeaIcon`, `SprigIcon`, `ShieldIcon`, `BookIcon`, `CakeIcon`, `PawIcon`, `GithubIcon`, `LinkedinIcon` e `MailIcon` (paths do design).
+
+**Resultado:**
+- `npm run lint`: **passou**, "No ESLint warnings or errors" (o aviso antigo de `<img>` no Hero sumiu).
+- `npm run build`: **passou** (exit 0). Rotas `/` (35.9 kB, 123 kB First Load), `/_not-found` e `/icon.png`, todas estáticas.
+  - O build foi rodado **numa cópia do projeto no scratchpad**, porque havia um `next dev` do usuário ativo na porta 3000 e o build reescreveria a `.next` que ele usa. O resultado é o mesmo, e o servidor do usuário não foi afetado.
+- Teste visual (`next start` da cópia + Playwright em 1280, 768, 470 e 375px, claro e escuro): foto em retrato com `object-position: 50% 22%`, flores visíveis em 768px ou mais e ocultas em 470px ou menos, cards ocultos abaixo de 480px, Jornada na ordem esperada, header colado no topo e nenhum erro no console. Os prints conferem com o design.
+
+**Pendências / observações:**
+- `ArcFrame`, `HeartOutline`, `Sparkle` e `HandNote` (em `src/components/decor/`) ficaram sem uso. `CurlArrow` e `SquiggleUnderline` ainda são usados em Projects, Certificates e Contact. Não apaguei nada.
+- O link "Tecnologias" da barra ainda não leva a lugar nenhum: o bloco não tem `id="tecnologias"` e continua dentro do About até ser portado.
+- Até 900px, o card "Mentora AWS" cobre parte do rosto na foto, porque segue a posição do design (`left: -18px`). Pode valer revisar quando for mexer no mobile.
+- No escuro, a barra ainda fica levemente acinzentada sobre o `body` branco antigo (já anotado na etapa 1).
+- Em 375px, a rolagem horizontal que já existia continua (vem de Certificates).
+
+**Arquivos alterados nesta etapa:** `src/app/globals.css`, `src/app/page.tsx`, `src/components/Hero.tsx`, `src/components/About.tsx`, `src/components/icons.tsx`, o novo `src/components/Journey.tsx` e `public/images/white-carnation-flower.png` (movido de `public/projects/`).
+
+---
+
+## 2026-10-22 — `src/app/icon.png` convertido para PNG 512×512
+
+**Pedido:** converter `src/app/icon.png` em PNG de verdade, quadrado de 512×512, com fundo transparente e a tulipa centralizada sem cortar nem distorcer (fit contain, margem pequena), usando sharp; substituir o arquivo, rodar `npm run build` e confirmar com sharp o formato e o tamanho.
+
+**Antes de converter:**
+- **O sharp não vem com o projeto:** não há `node_modules/sharp`, e o Next 14.2.35 não o traz como dependência. Usei o sharp 0.33.5 já instalado no scratchpad (fora do projeto). Nada foi adicionado ao `package.json`.
+- O arquivo original era WebP 860×1280, **sem canal alfa**. Não é uma tulipa sobre fundo liso, e sim **uma foto com fundo desfocado** (rosa/dourado com bokeh): só 9,7% dos pixels têm a cor do canto, e o `trim` não encontra bordas. Por isso, a transparência só pode ficar **ao redor** da foto. O fundo desfocado da própria foto continua: removê-lo exigiria recortar a flor (segmentação), o que o sharp não faz.
+
+**O que foi feito:**
+- Cópia do original em `scratchpad/icon/original.webp`.
+- `sharp(original).resize({ width: 480, height: 480, fit: 'contain', background: transparente }).extend(16px em cada lado, transparente).png({ compressionLevel: 9 })` gera 512×512. A foto inteira fica com 322×480, centralizada, sem corte nem distorção, com 16px de margem e laterais transparentes.
+- O resultado substituiu `src/app/icon.png` (254 KB).
+
+**Verificação:**
+- `npm run build`: **passou** (exit 0), com as rotas `/`, `/_not-found` e `/icon.png` estáticas. O build foi rodado numa cópia no scratchpad, porque o `next dev` do usuário continuava ativo na porta 3000. O HTML gerado passou a ter `<link rel="icon" href="/icon.png?…" type="image/png" sizes="512x512">` (antes era `sizes="860x1280"`).
+- sharp no arquivo do projeto: `format: 'png'`, `width: 512`, `height: 512`, `hasAlpha: true`, alfa 0 nos 4 cantos e 255 no centro. A assinatura do arquivo é `89504e470d0a1a0a` (PNG real).
+
+**Observações:**
+- Em tamanho de favicon (16–32px), a foto vertical ocupa só cerca de 63% da largura e o fundo desfocado compete com a flor. Se ficar pouco legível na aba, a alternativa é recortar um quadrado em volta do botão da tulipa (`fit: 'cover'`), mas isso corta parte da foto, o que o pedido não queria.
+- 254 KB é pesado para um favicon. Dá para reduzir com quantização (`png({ palette: true })`) se quiser.
+
+**Arquivos alterados nesta etapa:** `src/app/icon.png`.
+
+---

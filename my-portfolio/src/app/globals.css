@@ -62,6 +62,31 @@
   color-scheme: dark;
 }
 
+/* Utilitários de seção do design. Ficam em @layer components para que classes
+   utilitárias do Tailwind (pt-*, pb-* etc.) possam sobrescrevê-los. */
+@layer components {
+  /* Espaçamento vertical padrão das seções */
+  .sec {
+    padding: clamp(4.5rem, 9vw, 7rem) 0;
+  }
+
+  /* Divisão circular: fim do bloco em curva, invadindo a seção seguinte (margem negativa) */
+  .dome {
+    position: relative;
+    z-index: 1;
+    background: var(--ground);
+    border-radius: 0 0 50% 50% / 0 0 var(--arc) var(--arc);
+    padding-bottom: calc(var(--arc) + 1rem);
+    margin-bottom: calc(var(--arc) * -1);
+  }
+
+  /* Seção com fundo diferente que recebe a curva do .dome anterior */
+  .band {
+    background: var(--surface-2);
+    padding-top: calc(var(--arc) + clamp(3.5rem, 7vw, 5.5rem));
+  }
+}
+
 * {
   scroll-behavior: smooth;
 }
