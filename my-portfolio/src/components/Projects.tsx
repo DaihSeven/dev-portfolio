@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import Image from 'next/image'
 import { projects, projectCategories, type Project, type ProjectCategory } from '@/data/projects'
 import { TulipIcon } from '@/components/icons'
+import CodeSketch from '@/components/decor/CodeSketch'
 
 type Filter = ProjectCategory | 'todos'
 
@@ -69,15 +70,14 @@ export default function Projects() {
   }, [searchTerm, filter])
 
   return (
-    // bg-ground explícito: no design a seção usa o fundo do body, que aqui ainda é o branco antigo
-    <section id="projetos" className="sec bg-ground font-karla text-[17px] leading-[1.65] text-body">
+    <section id="projetos" className="sec font-karla text-[17px] leading-[1.65] text-body">
       <div className="mx-auto w-[min(1120px,100%_-_2.5rem)]">
         <div className="mb-[2.4rem] flex flex-wrap items-baseline gap-4">
           <h2 className="font-display text-[clamp(2.1rem,4.6vw,3.2rem)] font-semibold leading-[1.08] tracking-[-.01em] text-ink">
             Projetos
           </h2>
           <TulipIcon className="h-5 w-5 flex-none self-center text-tulip" />
-          <p className="m-0 text-[.95rem] text-muted">Todos abertos na mesma página, sem setas</p>
+          <p className="m-0 text-[.95rem] text-muted">O que construí, do back-end ao front</p>
         </div>
 
         {/* Busca e filtros */}
@@ -130,20 +130,42 @@ export default function Projects() {
                   className="grid grid-cols-[.95fr_1.05fr] items-center gap-[clamp(1.5rem,4vw,3rem)] max-[860px]:grid-cols-1"
                 >
                   <div className={`relative ${imageRight ? 'order-2 max-[860px]:order-none' : ''}`}>
-                    <div className="relative aspect-[4/3] overflow-hidden rounded-[120px_120px_10px_10px] border border-line bg-surface-2">
+                    {/* Moldura 16:10 com cantos assimétricos: .frame-leaf com a imagem à esquerda,
+                        .frame-leaf-alt (espelhada) com a imagem à direita */}
+                    <div
+                      className={`relative aspect-[16/10] overflow-hidden border border-line bg-surface-2 ${
+                        imageRight ? 'frame-leaf-alt' : 'frame-leaf'
+                      }`}
+                    >
                       <Image
                         src={project.image}
                         alt={`Capa do projeto ${project.title}`}
                         fill
-                        sizes="(max-width: 860px) 100vw, 520px"
+                        sizes="(max-width: 860px) calc(100vw - 2.5rem), 550px"
                         className="object-cover"
                       />
                     </div>
+                    {/* Selo no canto de cima com raio pequeno (esquerdo na .frame-leaf, direito na -alt) */}
                     {project.featured && (
-                      <span className="absolute left-4 top-4 rounded-full border border-line bg-surface px-[.7rem] py-[.2rem] text-[.76rem] text-tulip">
+                      <span
+                        className={`absolute top-4 rounded-full border border-line bg-surface px-[.7rem] py-[.2rem] text-[.76rem] text-tulip ${
+                          imageRight ? 'right-4' : 'left-4'
+                        }`}
+                      >
                         Destaque
                       </span>
                     )}
+                    {/* Rabisco </> colado com fita no canto de baixo de raio grande, 12px para fora da borda
+                        (com a rotação, ainda cabe na margem lateral de 20px). Até 640px fica com 64px. */}
+                    <span
+                      aria-hidden="true"
+                      className={`pointer-events-none absolute -bottom-7 z-10 block w-[104px] max-[640px]:-bottom-5 max-[640px]:w-16 ${
+                        imageRight ? '-right-3 -scale-x-100' : '-left-3'
+                      }`}
+                    >
+                      <CodeSketch className="block h-auto w-full -rotate-[8deg]" />
+                      <span className="absolute bottom-[6px] left-2 h-[19px] w-[58px] -rotate-[24deg] bg-[color-mix(in_srgb,var(--gold)_40%,transparent)] max-[640px]:bottom-1 max-[640px]:h-3 max-[640px]:w-9" />
+                    </span>
                   </div>
 
                   <div>

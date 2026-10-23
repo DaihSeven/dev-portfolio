@@ -132,3 +132,11 @@ export function MailIcon({ className = '' }: IconProps) {
     </svg>
   )
 }
+
+export function PhoneIcon({ className = '' }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+      <path d="M6 2.5h3l1.5 4.5-2 1.4a12 12 0 0 0 5.6 5.6l1.4-2L20 13.5v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 3.5 4.7 2 2 0 0 1 5.5 2.5z" />
+    </svg>
+  )
+}

@@ -80,6 +80,20 @@
     margin-bottom: calc(var(--arc) * -1);
   }
 
+  /* Moldura "folha" dos Projetos: cantos assimétricos. --r é o raio grande.
+     .frame-leaf (imagem à esquerda): raio grande em cima à direita e embaixo à esquerda.
+     .frame-leaf-alt (imagem à direita): espelhado. */
+  .frame-leaf,
+  .frame-leaf-alt {
+    --r: clamp(56px, 8vw, 104px);
+  }
+  .frame-leaf {
+    border-radius: 24px var(--r) 24px var(--r);
+  }
+  .frame-leaf-alt {
+    border-radius: var(--r) 24px var(--r) 24px;
+  }
+
   /* Seção com fundo diferente que recebe a curva do .dome anterior */
   .band {
     background: var(--surface-2);
@@ -96,7 +110,3 @@ html {
   scroll-padding-top: calc(80px + env(safe-area-inset-top, 0px));
 }
 
-body {
-  background-color:  #fff;
-  color: #000;
-}

@@ -41,7 +41,6 @@ export const projects: Project[] = [
     category: 'frontend',
     kind: 'freelance',
     featured: true,
-    // Repositório privado do cliente: só o site no ar
     demoUrl: 'https://skyhawkdrones.com.br/',
   },
   {
@@ -70,11 +69,12 @@ export const projects: Project[] = [
   {
     id: 'finance-reminder-frontend',
     title: 'Finance Reminder Frontend',
-    description: 'Interface web de gerenciamento de contas e despesas, integrada à API.',
+    description: 'Frontend Interface web para gerenciamento de contas e despesas, integrada à Finance Reminder API.',
     image: '/projects/finance-reminder-frontend.png',
     technologies: ['React', 'TypeScript', 'Vite', 'React Router', 'Axios', 'Netlify'],
     category: 'frontend',
     kind: 'pessoal',
+    demoUrl: 'https://finance-reminder.netlify.app/login',
     github: 'https://github.com/DaihSeven/finance-reminder-frontend',
   },
   {
@@ -92,11 +92,12 @@ export const projects: Project[] = [
   {
     id: 'client-social-connect',
     title: 'Client Social Connect',
-    description: 'Frontend que consome a AjudaSocial API.',
+    description: 'Este projeto Ajuda Social - Conectando, foi desenvolvido como sequência do projeto backend AjudaSocial_API, que está sendo consumido neste frontend. "Facilitar o acesso a recursos que salvam vidas, conectando quem precisa de ajuda a quem pode oferecer."',
     image: '/projects/AjudaSocial.png',
     technologies: ['React', 'TypeScript', 'Next.js', 'Tailwind CSS', 'Vercel'],
     category: 'frontend',
     kind: 'pessoal',
+    demoUrl: 'https://client-social-connect.vercel.app/',
     github: 'https://github.com/DaihSeven/client-social-connect',
   },
   {
@@ -114,7 +115,7 @@ export const projects: Project[] = [
   {
     id: 'observabilidade',
     title: 'Observabilidade',
-    description: 'Métricas, dashboards e alertas.',
+    description: 'Ambiente de observabilidade usando Prometheus e Grafana para monitorar uma aplicação de exemplo com: Métricas, dashboards e alertas.',
     image: '/projects/observability.png',
     technologies: ['Python', 'Docker', 'Docker Compose', 'Prometheus', 'Grafana', 'AlertManager'],
     category: 'devops',
@@ -124,7 +125,7 @@ export const projects: Project[] = [
   {
     id: 'food-rescue',
     title: 'Food-Rescue',
-    description: 'API desenvolvida em equipe, com CRUD, testes automatizados e documentação.',
+    description: 'API desenvolvida em equipe, com CRUD, testes automatizados e documentação. API que conecta pessoas que precisam de alimentos a pessoas que querem doar ou que iriam desperdiçar alimentos que ainda podem ser utilizados, evitando o desperdício.',
     image: '/projects/foodrescure-api.png',
     technologies: ['Node.js', 'Express', 'Prisma', 'PostgreSQL', 'Jest', 'Swagger'],
     category: 'backend',
@@ -135,7 +136,7 @@ export const projects: Project[] = [
   {
     id: 'project-azimuth',
     title: 'Project Azimuth',
-    description: 'Ingestão, modelagem e exploração de dados com algoritmos preditivos.',
+    description: 'Ingestão, modelagem e exploração de dados com algoritmos preditivos. O projeto engloba desde a ingestão bruta e modelagem relacional em PostgreSQL (Neon DB), passando por análises exploratórias avançadas, algoritmos preditivos de demanda, motor de recomendação por similaridade e um dashboard interativo hospedado no Render.',
     image: '/projects/covers/project-azimuth.svg',
     technologies: ['Python', 'PostgreSQL', 'Pandas', 'NumPy'],
     category: 'dados-ia',
@@ -145,7 +146,7 @@ export const projects: Project[] = [
   {
     id: 'assistente-virtual-ia',
     title: 'Assistente Virtual com IA',
-    description: 'Assistente virtual com processamento de linguagem natural.',
+    description: 'Assistente virtual com processamento de linguagem natural. O HealthAssist AI é um assistente virtual desenvolvido em Python que utiliza uma base de conhecimento para responder dúvidas sobre saúde preventiva.',
     image: '/projects/covers/assistente-virtual-ia.svg',
     technologies: ['Python', 'NLP', 'IA generativa', 'Streamlit'],
     category: 'dados-ia',
@@ -155,7 +156,7 @@ export const projects: Project[] = [
   {
     id: 'deteccao-anomalias',
     title: 'Detecção de Anomalias',
-    description: 'Identificação de padrões e anomalias em dados.',
+    description: 'Identificação de padrões e anomalias em dados. Capaz de identificar transações financeiras potencialmente anômalas (suspeitas de fraude) a partir de um conjunto de características',
     image: '/projects/covers/deteccao-anomalias.svg',
     technologies: ['Python', 'Pandas'],
     category: 'dados-ia',
@@ -175,11 +176,12 @@ export const projects: Project[] = [
   {
     id: 'landing-adac',
     title: 'Landing page responsiva, ADAC Softwares',
-    description: 'Landing page responsiva (frontend).',
+    description: 'Landing page responsiva desenvolvida para o Teste Técnico Frontend da ADAC Softwares. O objetivo principal foi converter fielmente o design do Figma em uma aplicação funcional, priorizando código limpo, boas práticas, responsividade e documentação detalhada.',
     image: '/projects/adac-softwares.png',
     technologies: ['React'],
     category: 'frontend',
     kind: 'pessoal',
+    demoUrl: 'https://test-adac-softwares.vercel.app/',
     github: 'https://github.com/DaihSeven/frontend-test-adac-softwares',
   },
   {

@@ -588,3 +588,224 @@ Nenhuma cor nem lógica do carrossel foi alterada.
 **Arquivos alterados nesta etapa:** `src/data/projects.ts`. Os 2 `.jpg` e as 7 capas SVG listados acima foram apagados.
 
 ---
+
+## 2026-10-23 — Redesign, etapa 5: Certificados, formações e cursos
+
+**Pedido:** seguindo o design e `design/dados-portfolio.md` (seção CERTIFICAÇÕES, mais pendências e ressalvas): (1) ampliar `Certificate` (`workload`, `technologies`, `certificateUrl`, `badgeUrl`, `verification`, `disciplines`), importar todos os itens do arquivo, ordenar por `sort` (mais recente primeiro, sem data no fim), manter os itens só do site, deduplicar e não inventar dados; (2) reescrever `Certificates.tsx` (cabeçalho, totais, busca, filtros com contador, cards com tag, instituição, data, carga, descrição, disciplinas e tecnologias), com totais calculados e sem somar carga; (3) botões "Ver certificado" e "Ver badge" só com https, verificação discreta, links externos seguros e ícones Lucide; (4) mostrar 8 itens + "Ver mais certificados" (+10), resetando ao mudar filtro ou busca, e sem esconder itens na busca; (5) corrigir a rolagem horizontal em 375px. Rodar lint e build.
+
+**1. `src/data/certificates.ts`** (reescrito):
+- `Certificate`: `id: string`, `title`, `institution`, `date?` (texto exibido), `sort?` (AAAA-MM), `description?`, `category: 'certificacao' | 'formacao' | 'curso'`, `featured?`, `softSkill?`, `workload?`, `technologies?`, `certificateUrl?`, `badgeUrl?`, `verification?` e `disciplines?`. Novo `certificateCategories` (valor, rótulo e plural).
+- **34 itens do arquivo** (1–10, 12–35; o 11 virou o 35) + **1 item só do site**: "Certificação em Jornada da Inteligência Profissional" (PUCRS, agosto de 2022), mantido como estava, com a categoria "Certificação" → `certificacao`. Total: **35**.
+- `cert:` → `certificateUrl` e `badge:` → `badgeUrl`. Onde está "a confirmar" ou "sem link", o campo fica vazio.
+- **Pendências e ressalvas aplicadas:** Olimpíadas Azure com dezembro de 2024, 30h e link de verificação `olimpiadas.tftec.com.br/verificar/…`; Redes e Linux pela Proz, julho de 2024, 15h, com link; Arquiteto de Soluções AWS como **curso**, 13/12/2024 e 110h; AWS re/Start com 176h e badge; Programadores do Amanhã com **720h**; os 3 cursos da DIO com **4h cada**; Pulsar STEM sem link.
+- **Duplicatas:** os 22 itens do site que correspondem ao arquivo ficaram com uma só entrada, com os dados do arquivo (inclusive onde título ou instituição mudavam, ex.: "Centro Universitário Estácio" → CUESC, "Técnicas de Invasão" → Bruno Fraga, ONE "F2 T6" → "F2 TGF", e "Hacker Profissional" com o título completo).
+  - Onde o arquivo **não tem descrição** e o site tinha, mantive a descrição do site (marcado com comentário no código): Trilha ADA, Redes e Linux, 3× DIO, Ransomware, Hacker Profissional e Liderança Saudável.
+  - Os destaques antigos do Arquiteto AWS e da Trilha ADA saíram (o arquivo não os marca).
+- **Ordenação:** por `sort`, do mais recente para o mais antigo. No mesmo ano, as soft skills (32, 33, 34) ficam depois dos técnicos. Itens sem `sort` vão para o fim. O Coodesh tem `sort: 2023-01` mas "sem data", então é ordenado e não mostra data.
+- **Não adicionei**, por estarem fora da lista: "Especialização em IA para Devs" (Programadores do Amanhã, 100h, ago–dez 2026, em andamento, citada nas ressalvas) e "Descubra a Nuvem AWS (Nexa Resources)" (as ressalvas dizem que faz parte do Bootcamp Nexa).
+
+**2–4. `src/components/Certificates.tsx`** (reescrito):
+- `.sec.band` com `id="certificados"`. Cabeçalho "Certificados e formações" + tulipa + "Da nuvem ao back-end, um passo de cada vez".
+- **Totais calculados** com `reduce` sobre o array (Cormorant 2.8rem tulip). A carga horária não é somada em lugar nenhum.
+- Busca por título, instituição, descrição e tecnologias. Filtros Todos, Certificação, Formação e Curso com contadores calculados.
+- Card: ícone Lucide por categoria (Award, GraduationCap, BookOpen) em gold, título, tag do tipo, instituição (tulip), data, "carga horária: X" (só se houver), descrição, lista de disciplinas, chips de tecnologias e links.
+- Botões "Ver certificado" e "Ver badge" só com https válido, com `target="_blank"` e `rel="noopener noreferrer"`. A verificação aparece em texto de .78rem, como link quando começa com `http`.
+- Paginação: 8 itens e depois **+10 por clique** ("Ver mais certificados (+10 de N)"). Mudar o filtro ou a busca volta para 8. Com busca ativa, mostra tudo.
+- Lista vazia mostra "Nada nessa categoria ainda." em Caveat.
+
+**5. Rolagem horizontal:** em **375px ela sumiu** (`scrollWidth` 375 = viewport). Vinha dos cards antigos de Certificados (badges `whitespace-nowrap`). Os novos cards têm `min-w-0` no título e no input e `break-all` na verificação.
+
+**Resultado:**
+- `npm run lint`: **passou** (exit 0), "No ESLint warnings or errors".
+- `npm run build`: **passou** (exit 0), `/` com 39.8 kB (127 kB First Load). Rodei direto no projeto, porque não havia `next dev` ativo.
+- No navegador (`next start` + Playwright): totais 8 certificações, 5 formações e 22 cursos; filtros Todos (35), Certificação (8), Formação (5) e Curso (22); paginação 8 → 18 → 28 → 35; cada filtro volta a mostrar 8 (Certificação e Formação mostram tudo, sem botão).
+  - Busca: "aws" encontra 8, "dio" 5, "kubernetes" 1 e "pucrs" 3, sem botão "ver mais". Um termo inexistente mostra a mensagem de vazio. Ao limpar a busca, volta a 8.
+  - 21 botões "Ver certificado" e 4 "Ver badge", todos https e com `_blank` + `noopener noreferrer`. Verificação como link (Olimpíadas Azure, Trilha ADA) e como texto (Rocketseat). 3 cards com disciplinas.
+  - Nenhum texto cortado ou vazando em 375 e 320px. Sem erros no console.
+
+**Números finais:**
+- Total por categoria: **certificação 8 · formação 5 · curso 22** (35 itens).
+- **Sem carga horária: 5** (AWS SAA, AWS AI Practitioner, AWS Cloud Practitioner, Google Cloud Arcade e Jornada da Inteligência Profissional).
+- **Sem link de certificado ou badge: 10** (Google Cloud Arcade, Pulsar STEM, Desenvolvimento Web Full Stack, Olimpíadas Azure (tem só o link de verificação), 3× DIO, Ransomware, Arquiteto de Soluções AWS e Jornada). Sem nenhum link, nem de verificação: 9.
+
+**Observações:**
+- Em **320px** ainda sobra rolagem horizontal (`scrollWidth` 352), causada pelos cards da seção **Contato** (e-mail longo com `p-8`). Ela ainda não foi portada e será resolvida quando for.
+- Só sobrou o `©` do rodapé como "pictográfico", e não é emoji.
+
+**Arquivos alterados nesta etapa:** `src/data/certificates.ts` e `src/components/Certificates.tsx`.
+
+---
+
+## 2026-10-23 — Ajuste da etapa 5: destaques, item em andamento e selos
+
+**Pedido:** (1) `featured: true` só em AWS SAA, AWS AI Practitioner, AWS Cloud Practitioner, Desenvolvimento Web Full Stack e no item novo; (2) novo item de formação "Especialização em Inteligência Artificial para DEVs" (Programadores do Amanhã, "Agosto a dezembro de 2026 (em andamento)", sort 2026-12, 100h, descrição dada, sem links e sem tecnologias); (3) campo `inProgress?: boolean` e tag "Em andamento" com borda dourada; (4) selo "Destaque" (Sparkles, texto tulip sobre rose translúcido) ao lado da tag de tipo, com borda `border-rose` nos cards em destaque, mantendo a ordem por data; (5) atualizar `design/dados-portfolio.md` e confirmar 8/6/22 (36). Rodar lint e build.
+
+**O que foi feito:**
+- **`src/data/certificates.ts`:**
+  - `inProgress?: boolean` na interface.
+  - `featured: true` acrescentado no AWS Cloud Practitioner. SAA, AI Practitioner e Full Stack já tinham. Nenhum outro item tem `featured`.
+  - Item novo `programadores-do-amanha-especializacao-ia` com exatamente os dados pedidos, `featured` e `inProgress`, sem links e sem tecnologias.
+- **`src/components/Certificates.tsx`:**
+  - Na linha da tag de tipo entraram a tag **"Em andamento"** (mesmo estilo da tag de tipo, com `border-gold`) e o selo **"Destaque"** (pílula com `Sparkles` de 12px, `text-tulip` e fundo `color-mix(var(--rose) 16%, transparent)`). O `color-mix` é necessário porque as cores do tema são `var(--…)` e não aceitam o modificador `/opacidade` do Tailwind.
+  - Os cards em destaque usam `border-rose` em vez de `border-line`, e nada mais muda.
+  - A ordem continua por data: o item novo (sort 2026-12) aparece no topo.
+- **`design/dados-portfolio.md`:** "destaque" no item 3 (Cloud Practitioner), novo **item 36** na seção de formação, e a linha "Destaques (featured): 1, 2, 3, 10 e 36; … Itens em andamento: 36." no topo da seção.
+
+**Resultado:**
+- `npm run lint`: **passou** (exit 0), "No ESLint warnings or errors".
+- `npm run build`: **passou** (exit 0), `/` com 40.2 kB (127 kB First Load). Rodei direto no projeto, porque não havia `next dev` ativo.
+- No navegador (claro e escuro): **totais 8 certificações, 6 formações e 22 cursos**; filtros **Todos (36)**, Certificação (8), Formação (6) e Curso (22).
+  - 1º card: "Especialização em Inteligência Artificial para DEVs", com as tags {Formação, Em andamento, Destaque}, 0 links e 0 tecnologias.
+  - 5 selos "Destaque", exatamente nos 5 itens pedidos. A borda deles é o token `--rose` (#dd7c8c / #e8909c) e a dos demais, `--line`. A pílula tem texto `--tulip` e fundo rose a 16%. A tag "Em andamento" tem borda `--gold` e o mesmo tamanho da tag de tipo.
+  - Sem erros no console.
+
+**Observação:** no `.md`, o item 10 (Desenvolvimento Web Full Stack) ainda diz "carga: a confirmar", embora as ressalvas informem 720h, que já é o valor usado no código desde a etapa 5. Dá para atualizar a linha se quiser a fonte 100% alinhada.
+
+**Arquivos alterados nesta etapa:** `src/data/certificates.ts`, `src/components/Certificates.tsx` e `design/dados-portfolio.md`.
+
+---
+
+## 2026-10-23 — Redesign, etapa 6: Contato, fundo da página, metadados, ícone, limpeza e verificação final
+
+**Pedido:** (1) reescrever `Contact.tsx` conforme o HTML (nota "o bule já está no fogo", título, texto, 4 contatos e foto do chá em arco 3:4 com `next/image`, indo para baixo com no máximo 300px em telas menores), escolher entre as duas fotos de chá, pôr `--surface-2` atrás se houver transparência e corrigir a rolagem em 320px; (2) `body` com `bg-ground text-body`; (3) metadados novos; (4) confirmar ou converter o `icon.png`; (5) remover o que ficou sem uso e listar as imagens sem uso, sem apagá-las; (6) prints da página inteira em 1280 e 375px nos dois temas, sem rolagem em 375 e 320px e sem erros. Rodar lint e build.
+
+**1. Contato:**
+- **Foto escolhida: `public/images/turkish-traditional-tea.png`** (360×360, **fundo transparente**, dois copos com pires). A outra, `traditional-turkish-tea.png` (961×641), é paisagem e tem **marcas d'água "pngtree"** espalhadas pelo fundo branco: no recorte 3:4 o copo ficaria espremido e as marcas apareceriam.
+- Como a escolhida tem fundo transparente, a moldura tem `bg-surface-2`.
+- `Contact.tsx` reescrito: card `.invite` (surface, borda line, raio 20px, `shadow-soft`, grade `1.15fr .85fr`, 1 coluna até 860px), nota em Caveat (rose), h2 em Cormorant e texto com `max-w-[52ch]`.
+- Contatos em `grid-cols-[repeat(auto-fit,minmax(min(210px,100%),1fr))]` com os ícones do design (`MailIcon`, `LinkedinIcon`, `GithubIcon` e o novo `PhoneIcon` em `icons.tsx`). LinkedIn e GitHub abrem com `_blank` + `noopener noreferrer`.
+- **Rolagem em 320px corrigida:** `min-w-0` no card e no bloco de texto, `break-all` no valor (e-mail) e `min(210px,100%)` no `minmax`, para a coluna nunca passar da largura do card.
+- Foto: `aspect-[3/4] rounded-[140px_140px_12px_12px] border-line overflow-hidden` com `next/image fill object-cover`.
+- **Mudança feita pelo usuário durante a etapa:** a largura máxima e a centralização da foto passaram de `max-[860px]` para `max-[660px]`. Mantive. Entre 661 e 860px, a foto ocupa a largura do card (1 coluna) enquanto o `sizes` ainda declara `300px` para ≤860px, então ela pode ficar menos nítida nessa faixa. Para resolver, dá para ajustar o `sizes` (ex.: `(max-width: 660px) 300px, (max-width: 860px) 100vw, 400px`).
+- **Efeito do `object-cover`:** a imagem é quadrada e o arco é 3:4, então as bordas dos pires e a alça do copo da direita ficam um pouco cortadas. No tema escuro aparece uma leve borda clara em volta dos copos, que vem do recorte da própria imagem.
+
+**2. Fundo da página:** o `body` agora é `bg-ground font-karla text-body` (em `layout.tsx`). A regra antiga `body { #fff / #000 }` saiu do `globals.css`. A **Inter foi removida** (não havia mais seção usando). O `bg-ground` explícito que eu tinha posto em `#projetos` virou redundante e saiu. A barra escura deixou de ficar acinzentada.
+
+**3. Metadados:** título "Daiane · Desenvolvedora full stack" e descrição "Desenvolvedora full stack com raiz no back-end. Estudante de Engenharia de Software que cuida de APIs, bancos de dados e deploys, e gosta de ensinar quem está chegando." (fiel ao texto do Hero).
+
+**4. Ícone:** `src/app/icon.png` **já está certo**: formato png, assinatura binária PNG (`89504e47…`), 512×512, com alfa. Nada foi convertido.
+
+**5. Limpeza:**
+- **Removidos** (nenhum arquivo os importava): `src/components/decor/` inteira (`ArcFrame`, `CurlArrow`, `HandNote`, `HeartOutline`, `Sparkle` e `SquiggleUnderline`; a `CurlArrow` e a `SquiggleUnderline` só eram usadas no Contact antigo).
+- **`tailwind.config.js`:** saíram as 11 animações antigas e seus keyframes (`slide-*`, `float`, `fade-in`, `fade-in-up`, `spin-slow`, `spin-slower`, `shine`, `scroll`; 0 usos), a paleta `butter` (0 usos) e a escala numérica `rose-50…600` (0 usos). O `rose` agora é só `var(--rose)`. O `content` ficou só com `./src/**`, porque as pastas `pages/`, `components/` e `app/` da raiz não existem.
+- Todos os ícones de `icons.tsx` estão em uso. O `useInView` continua sendo usado (About e Technologies).
+- **Imagens sem uso** (**não apagadas**): `/images/traditional-turkish-tea.png` (152 KB), `/projects/avatar_games.png` (1,7 MB) e `/projects/watchtower.-api.png` (60 KB).
+- Nota (não alterado): o projeto tem `.eslintrc.json`, que é o usado pelo `next lint` com ESLint 8, e também `eslint.config.mjs`, uma flat config que importa `eslint/config` do ESLint 9 e não é usada. Dá para remover numa limpeza de tooling.
+
+**6. Verificação final** (`next start` + Playwright):
+- **Rolagem horizontal:** nenhuma em 1280, 375 e **320px**, nos temas claro e escuro (`scrollWidth` igual à viewport em todos).
+- `body` com `--ground` (`#faf6ef` no claro, `#101d22` no escuro), fonte Karla, e a barra com 88% de `--ground` (já não fica acinzentada).
+- Imagens: 24/24 em 1280px. Em ≤480px, as flores do Hero ficam com `display: none` (como no design) e, por terem carregamento preguiçoso, não são baixadas. Isso não é erro.
+- **Nenhum erro no console nem resposta HTTP ≥ 400.**
+- Prints da página inteira salvos no scratchpad (`final/light-1280.png`, `dark-1280.png`, `light-375.png` e `dark-375.png`) e revisados por partes: todas as seções conferem nos dois temas.
+
+**Resultado:**
+- `npm run lint`: **passou** (exit 0), "No ESLint warnings or errors". Rodei de novo depois da mudança do usuário no `Contact.tsx`.
+- `npm run build`: **passou** (exit 0), `/` com 40.1 kB (127 kB First Load). Rodei numa cópia no scratchpad, porque havia um `next dev` do usuário ativo na porta 3000.
+
+**Arquivos alterados:** `src/components/Contact.tsx`, `src/components/icons.tsx` (+`PhoneIcon`), `src/app/layout.tsx`, `src/app/globals.css`, `src/components/Projects.tsx` (fundo redundante removido) e `tailwind.config.js`.
+**Arquivos removidos:** `src/components/decor/ArcFrame.tsx`, `CurlArrow.tsx`, `HandNote.tsx`, `HeartOutline.tsx`, `Sparkle.tsx` e `SquiggleUnderline.tsx`.
+
+---
+
+## 2026-10-23 — Contato: foto do chá e arco menores
+
+**Pedido:** diminuir a imagem do chá e o arco (a usuária colou o trecho atual, com `max-[660px]:max-w-[300px]` e `sizes="(max-width: 660px) 200px, 300px"`).
+
+**O que foi feito (`src/components/Contact.tsx`):**
+- A moldura deixou de ocupar a coluna inteira (~400px no desktop, e sem limite entre 661 e 860px). Agora tem `max-w-[280px]` em todas as larguras e `max-[660px]:max-w-[200px]` até 660px, sempre com `justify-self-center`. A proporção 3:4, o arco `rounded-[140px_140px_12px_12px]`, a borda, o `bg-surface-2` e o `object-cover` continuam iguais.
+- `sizes` passou a `(max-width: 660px) 200px, 280px`, coerente com as larguras reais.
+
+**Verificação** (no `next dev` da usuária, porta 3000, sem build):
+- Moldura: **280×373** em 1280px e em 768px, e **200×267** em 375px, centralizada na coluna.
+- Sem rolagem horizontal (`scrollWidth` = viewport) e sem erros na página.
+- `npm run lint`: passou.
+
+**Arquivo alterado:** `src/components/Contact.tsx`.
+
+---
+
+## 2026-10-23 — Projetos: tamanho dos arcos e por que as imagens aparecem cortadas
+
+**Pergunta:** qual o tamanho dos arcos em volta das imagens dos Projetos, para adaptar as imagens e elas aparecerem 100% inteiras (hoje aparecem cortadas). Nada foi alterado no código.
+
+**Moldura atual (`Projects.tsx`):** `aspect-[4/3]`, `rounded-[120px_120px_10px_10px]` (raio fixo de **120px** nos cantos de cima e 10px nos de baixo), `overflow-hidden` e imagem com `object-cover`.
+
+**Tamanho real do arco, medido no navegador:**
+| largura da tela | arco (L×A) |
+|---|---|
+| 1280px ou mais | 509×382 |
+| 1024px | 448×336 |
+| 861px | 374×280 |
+| 768px (1 coluna) | 728×546 |
+| 375px | 335×251 |
+| 320px | 280×210 |
+
+**Por que corta (duas causas):**
+1. **Proporção:** o arco é 4:3 (1,33) e quase todos os prints são bem mais largos, cerca de 2,1:1 (ex.: skyhawk, watchtower, finance, AjudaSocial e breakfree, todos ~1365×646). O `object-cover` preenche a altura e **descarta ~37% da largura (~18% de cada lado)**. Os piores casos: `maquina-de-turing.png` (2,51:1, perde 47%), `observability.png` (2,25:1, perde 41%) e `aws-storage.png` (1,91:1, perde 30%). Os mais próximos: `study-manager.png` (perde 13%) e `adac-softwares.png` (perde 4%). As 6 capas SVG já são 4:3 e não perdem nada por proporção.
+2. **Cantos do arco:** o raio de 120px é fixo, então numa moldura estreita ele ocupa mais espaço proporcional: 24% da largura em 509px e **43% em 280px**. Os cantos de cima de qualquer imagem (inclusive as 4:3) ficam escondidos, e é justamente onde os prints têm logo e menu.
+
+**Medidas para adaptar as imagens (sem mudar o código):**
+- Exportar em **4:3**, de preferência **1600×1200** (o arco chega a 728px de largura no tablet; ×2 para telas retina).
+- **Área segura:** para nada cair nos cantos curvos, mesmo na tela de 320px, manter o conteúdo dentro de um retângulo com **~12,5% de margem no topo e nas laterais** (≈ 200px num canvas de 1600×1200). Embaixo basta ~1% (o raio é de 10px). A conta: um retângulo fica dentro de um canto arredondado de raio r se começar a pelo menos r·(1 − 1/√2) ≈ 0,29·r da borda, ou seja, 35px de 120px, e 35/280 = 12,5%.
+- Usar **fundo transparente** na margem (PNG), para que o fundo da própria moldura (`bg-surface-2`) apareça e acompanhe o tema claro e escuro.
+
+**Alternativa pelo código (sem editar imagens):** trocar `object-cover` por `object-contain` com um respiro interno no arco. A imagem inteira aparece, com faixas de `surface-2` em cima e embaixo, mas os prints largos ficam visualmente menores.
+
+---
+
+## 2026-10-23 — Prints dos Projetos adaptados para 4:3 com área segura do arco
+
+**Pedido:** executar o script da usuária, que instala o `sharp` (se faltar) e converte cada PNG de `public/projects/` para 1600×1200 com a imagem inteira dentro da área segura do arco (200px nas laterais e no topo, 12px embaixo), margem transparente e backup dos originais em `design/originais-projetos/`.
+
+**O que foi feito:**
+- Rodei o script exatamente como enviado. O `sharp` não estava instalado, então o `npm i -D sharp` adicionou **`sharp@^0.35.5` às devDependencies** (`package.json` e `package-lock.json` alterados). O npm mostrou o aviso de 16 vulnerabilidades em dependências do projeto, que já existia e não foi tratado.
+- **16 PNGs convertidos para 1600×1200**, com alfa, e **16 originais guardados** em `design/originais-projetos/`. O script foi apagado ao fim (`rm resize-projects.mjs`).
+- O script processa todos os PNGs da pasta, então também converteu os dois **sem uso** (`avatar_games.png` e `watchtower.-api.png`). Os originais deles estão no backup.
+- **Imagens ampliadas** (eram menores que a área de 1200×988): `maquina-de-turing.png` **3,00×** (de 400×160), `adac-softwares.png` 1,40×, `study-manager.png` 1,38×, `observability.png` 1,22× e `aws-storage.png` 1,21×. As demais foram reduzidas (~0,88×).
+- Os arquivos ficaram maiores (ex.: `watchtower.png` de 254 para 402 KB, `study-manager.png` de 31 para 201 KB), mas o `next/image` serve versões otimizadas.
+
+**Verificação:**
+- `npm run lint`: passou.
+- `npm run build`: passou (numa cópia no scratchpad, porque o `next dev` da usuária estava na porta 3000).
+- `next start` da cópia + Playwright: em 1280px (claro) e 320px (escuro), **20/20 imagens carregadas, todas servidas em 4:3**. Nos prints das molduras (SkyHawk, Watchtower, Observabilidade, Máquina de Turing, AWS EC2 e Study Manager), a imagem aparece **inteira, sem corte nas laterais nem nos cantos do arco**, com o fundo da moldura aparecendo na margem transparente. Sem erros nem respostas HTTP ≥ 400.
+
+**Observações:**
+- Com 200px de margem (valor pensado para a tela de 320px), os prints ocupam cerca de 56% da largura do arco e parecem pequenos no desktop. Dá para reduzir a margem (ex.: 120px nas laterais e 140px no topo), aceitando um corte mínimo nos cantos só em telas muito estreitas.
+- O `next dev` guarda em cache as imagens otimizadas. Se as versões antigas ainda aparecerem, recarregue com Ctrl+Shift+R ou apague `.next/cache/images`.
+- Com o `sharp` instalado, o `next start` passa a usá-lo para otimizar imagens em produção.
+
+**Arquivos alterados:** os 16 PNGs de `public/projects/`, `package.json` e `package-lock.json`. **Novos:** `design/originais-projetos/` (16 originais).
+
+---
+
+## 2026-10-23 — Projetos: moldura "folha" 16:10, prints reexportados, capas 16:10 e rabisco </>
+
+**Pedido:** (1) trocar o arco por um retângulo `aspect-[16/10]` com cantos assimétricos (`.frame-leaf` / `.frame-leaf-alt` com `--r: clamp(56px, 8vw, 104px)`), alternando como o layout; (2) reexportar os prints dos originais para 1600×1000, transparentes, com área segura de 64px e ampliação máxima de 1,5×; (3) capas SVG em 16:10 (`viewBox="-80 0 960 600"` e fundo de -80 a 880); (4) decoração `CodeSketch.tsx` (</> à mão, traço 5, tulip, brilho dourado) no canto de baixo de raio grande, para fora da borda, a −8° (espelhada à direita), com fita 58×19 dourada a 40% a −24°, reduzida para ~64px abaixo de 640px; (5) trocar o subtítulo e listar outros textos que comentam o design; (6) apagar `.next`, rodar lint e build e verificar com Playwright (1280/375, claro/escuro, sem rolagem em 375/320 e sem cortes nos cantos).
+
+**O que foi feito:**
+1. **`globals.css`** (`@layer components`): `.frame-leaf, .frame-leaf-alt { --r: clamp(56px, 8vw, 104px) }`, `.frame-leaf { border-radius: 24px var(--r) 24px var(--r) }` e `.frame-leaf-alt { border-radius: var(--r) 24px var(--r) 24px }`.
+   - **`Projects.tsx`:** moldura `relative aspect-[16/10] overflow-hidden border-line bg-surface-2` + `frame-leaf` (imagem à esquerda) ou `frame-leaf-alt` (à direita, `imageRight = index % 2 === 1`). `next/image fill object-cover` com `sizes="(max-width: 860px) calc(100vw - 2.5rem), 520px"`.
+   - **Ajuste além do pedido:** o selo "Destaque" vai para o canto de cima de **raio pequeno**: esquerdo na `.frame-leaf` e direito na `-alt`. No canto esquerdo da `-alt` ele ficaria pendurado sobre a curva grande.
+2. **Prints:** script temporário `reexport-projects.mjs` (com o `sharp` do projeto, **apagado após rodar**). Gera 14 PNGs 1600×1000 transparentes a partir de `design/originais-projetos/`, com `rotate()`, `scale = min(1472/w, 872/h, 1.5)` e centralização. `avatar_games.png` e `watchtower.-api.png` foram ignorados (os de `public/` continuam na versão 1600×1200 anterior, sem uso). Escalas: ~1,08–1,09× nos prints largos; adac 1,42×; aws-storage 1,48×; **Máquina de Turing, observability e study-manager limitados a 1,50×** (Turing ficou com 600×240, centralizada).
+3. **Capas SVG** (6 em `public/projects/covers/`): `viewBox="-80 0 960 600"` e `<rect x="-80" width="960" …>`. Conferi cada uma renderizada em 480×300 (1,60): sem distorção, com o desenho centralizado e o fundo cobrindo tudo.
+4. **`src/components/decor/CodeSketch.tsx`** (novo): `</>` em três traços levemente irregulares (`strokeWidth 5`, `round`, `currentColor`/`text-tulip`) e um brilho de 4 pontas em `text-gold` no canto superior direito.
+   - Em cada card, um `<span aria-hidden pointer-events-none>` absoluto em `-bottom-7` e `-left-3` (ou `-right-3 -scale-x-100` nos cards da direita), com 104px de largura (64px até 640px). O desenho fica a `-rotate-[8deg]` e a fita é um `<span>` de 58×19 (36×12 no celular) em `color-mix(in srgb, var(--gold) 40%, transparent)` a `-rotate-[24deg]`.
+   - **Correção durante o teste:** com 16px para fora, a caixa girada passava 1px da margem lateral de 20px em 768–1024px e criava rolagem horizontal. O deslocamento ficou em **12px**.
+5. **Subtítulo:** "Todos abertos na mesma página, sem setas" → **"O que construí, do back-end ao front"**.
+   - Busca por outros textos que comentam o design: **nenhum texto visível na página** ("sem setas", "na mesma página", "print do projeto", "tulipa real", "aqui", "placeholder", "mockup", "lorem" não aparecem no `innerText`).
+   - Só existem **comentários de código** citando o design ou o HTML (invisíveis para quem visita): `layout.tsx` (l. 5, 53), `certificates.ts` (l. 1), `projects.ts` (l. 1, 210), `Technologies.tsx` (l. 15), `Hero.tsx` (l. 12, 17, 78), `icons.tsx` (l. 1), `Navbar.tsx` (l. 62), `Journey.tsx` (l. 13) e `Certificates.tsx` (l. 160). Não alterei nenhum.
+
+**Verificação:**
+- `.next` apagada (duas vezes, antes de cada build). `npm run lint`: **passou**. `npm run build`: **passou** (`/` com 40.5 kB, 128 kB First Load).
+- `next start` + Playwright, claro e escuro, em 1280, 1024, 861, 768, 375 e 320px:
+  - Moldura: 509×318 / 563×352 (r 102,4px) em 1280, 448×280 / 495×309 (r 81,9) em 1024, 728×455 (r 61,4) em 768, 335×209 (r 56) em 375 e 280×175 (r 56) em 320.
+  - **Rolagem horizontal: nenhuma** em todas as larguras (inclusive 375 e 320).
+  - **Cantos:** calculei o retângulo do conteúdo de cada print pelo alfa do PNG e testei os 4 cantos contra os raios reais. **Todos inteiros**, exceto **`aws-storage.png` em 320px, que perde 1,7px nos cantos de raio grande (sup. esq. e inf. dir.)**. Nessa largura, o raio mínimo de 56px e a margem de 64px (~11px na tela) não bastam para esse print, que é mais alto. Para zerar, há duas saídas: reexportar só esse print com área segura de ~76px, ou baixar o mínimo do `clamp` para 52px.
+  - Sem erros no console nem respostas HTTP ≥ 400. Os prints da seção (1280 claro e 375 escuro) conferem.
+- **Atenção:** a `.next` foi apagada e recriada com o build de produção enquanto o `next dev` da usuária (porta 3000) estava rodando. Ele ainda responde, mas precisa ser **reiniciado** (`npm run dev`).
+
+**Arquivos alterados:** `src/app/globals.css`, `src/components/Projects.tsx`, os 14 PNGs de `public/projects/` e as 6 capas de `public/projects/covers/`. **Novo:** `src/components/decor/CodeSketch.tsx`.
+
+---
+AjudaSocial

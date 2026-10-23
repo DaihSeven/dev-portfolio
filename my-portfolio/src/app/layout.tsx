@@ -1,9 +1,6 @@
 import type { Metadata } from 'next'
-import { Inter, Cormorant_Garamond, Karla, Caveat } from 'next/font/google'
+import { Cormorant_Garamond, Karla, Caveat } from 'next/font/google'
 import './globals.css'
-
-// Inter continua no <body> até as seções antigas serem portadas para o novo design
-const inter = Inter({ subsets: ['latin'] })
 
 // Fontes do novo design, expostas como variáveis CSS (usadas no tailwind.config.js)
 const cormorant = Cormorant_Garamond({
@@ -29,8 +26,9 @@ const caveat = Caveat({
 })
 
 export const metadata: Metadata = {
-  title: 'Daiane - Portfólio Digital',
-  description: 'Portfólio profissional de Daiane - Desenvolvedora Full Stack',
+  title: 'Daiane · Desenvolvedora full stack',
+  description:
+    'Desenvolvedora full stack com raiz no back-end. Estudante de Engenharia de Software que cuida de APIs, bancos de dados e deploys, e gosta de ensinar quem está chegando.',
 }
 
 // Aplica o tema salvo antes da primeira pintura (evita piscar o tema errado).
@@ -52,7 +50,8 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className={inter.className}>{children}</body>
+      {/* Fundo e texto do tema (tokens do design), com a Karla como fonte base */}
+      <body className="bg-ground font-karla text-body">{children}</body>
     </html>
   )
 }
