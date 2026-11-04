@@ -16,11 +16,9 @@ const categoryIcons: Record<CertificateCategory, LucideIcon> = {
 const categoryLabel = (category: CertificateCategory) =>
   certificateCategories.find((c) => c.value === category)?.label ?? category
 
-// Quantos cards aparecem antes do "Ver mais" e quantos cada clique revela
 const INITIAL_VISIBLE = 8
 const STEP = 10
 
-// Totais calculados a partir do array (nunca fixos). Carga horária nunca é somada.
 const counts = certificates.reduce<Record<Filter, number>>(
   (acc, cert) => ({ ...acc, [cert.category]: acc[cert.category] + 1 }),
   { todos: certificates.length, certificacao: 0, formacao: 0, curso: 0 }
@@ -54,7 +52,6 @@ function CertificateCard({ cert }: { cert: Certificate }) {
   const verificationIsLink = cert.verification?.startsWith('http')
 
   return (
-    // Destaque: só a borda fica mais marcada (rose)
     <article className={`rounded-[14px] border bg-surface px-6 py-[1.3rem] ${cert.featured ? 'border-rose' : 'border-line'}`}>
       <div className="flex flex-wrap items-start gap-[.9rem]">
         <Icon className="mt-[.3rem] h-[18px] w-[18px] flex-none text-gold" aria-hidden="true" />
@@ -142,11 +139,9 @@ export default function Certificates() {
     [filter, query]
   )
 
-  // Com busca ativa, mostra tudo; sem busca, pagina (8 e depois +10 por clique)
   const shown = query ? filtered : filtered.slice(0, visibleCount)
   const remaining = filtered.length - shown.length
 
-  // Mudar filtro ou busca volta ao estado inicial da paginação
   const changeFilter = (value: Filter) => {
     setFilter(value)
     setVisibleCount(INITIAL_VISIBLE)
@@ -157,7 +152,6 @@ export default function Certificates() {
   }
 
   return (
-    // .sec + .band: fundo surface-2, como no design
     <section id="certificados" className="sec band font-karla text-[17px] leading-[1.65] text-body">
       <div className="mx-auto w-[min(1120px,100%_-_2.5rem)]">
         <div className="mb-[2.4rem] flex flex-wrap items-baseline gap-4">

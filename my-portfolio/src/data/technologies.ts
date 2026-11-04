@@ -5,7 +5,6 @@ import {
   SiPostgresql, SiMongodb, SiMysql, SiRedis, SiPrisma,
   SiDocker, SiGooglecloud, SiLinux, SiGit, SiGithub, SiPrometheus, SiGrafana, SiGoogle,
 } from 'react-icons/si'
-// Java, AWS e bcrypt não existem (ou foram removidos) no Simple Icons, então vêm do Font Awesome
 import { FaJava, FaAws, FaLock } from 'react-icons/fa'
 
 export type TechnologyCategory = 'Backend' | 'Frontend' | 'Dados' | 'Infra/Cloud'
@@ -16,7 +15,6 @@ export interface Technology {
   icon: IconType
 }
 
-// Ordem em que as categorias aparecem na seção "Tecnologias"
 export const technologyCategories: TechnologyCategory[] = ['Backend', 'Frontend', 'Dados', 'Infra/Cloud']
 
 export const technologies: Technology[] = [

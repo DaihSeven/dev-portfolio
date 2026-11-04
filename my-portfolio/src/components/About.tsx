@@ -12,8 +12,6 @@ const likes = [
   { icon: PawIcon, text: 'Gatos e cachorros, sempre' },
 ]
 
-// Fade-in subindo. Com prefers-reduced-motion as classes motion-safe não se aplicam,
-// então o conteúdo já aparece visível e sem transição.
 const reveal = (visible: boolean) =>
   `motion-safe:transition-all motion-safe:duration-700 motion-safe:ease-out ${
     visible ? 'opacity-100 translate-y-0' : 'motion-safe:opacity-0 motion-safe:translate-y-6'
@@ -23,7 +21,6 @@ export default function About() {
   const { ref: aboutRef, inView: aboutVisible } = useInView<HTMLDivElement>()
 
   return (
-    // .sec + .band: seção com fundo surface-2 que recebe a curva do Hero
     <section id="sobre" className="sec band font-karla text-[17px] leading-[1.65] text-body">
       <div className="mx-auto w-[min(1120px,100%_-_2.5rem)]">
         <div className="mb-[2.4rem] flex flex-wrap items-baseline gap-4">
@@ -45,7 +42,7 @@ export default function About() {
               back-end e domínio do stack completo.
             </p>
             <p className="mb-4 max-w-[60ch]">
-              Hoje trabalho como freelancer em duas frentes bem diferentes: APIs, automações e integrações com IA de
+              Trabalhei como freelancer em duas frentes bem diferentes: APIs, automações e integrações com IA de
               um lado, e uma plataforma de monitoramento aéreo do outro. Também fui de aluna a mentora na Escola da
               Nuvem, ajudando outras pessoas a passarem nas certificações AWS.
             </p>

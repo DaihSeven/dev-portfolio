@@ -12,12 +12,12 @@ const kindLabels: Record<Project['kind'], string> = {
   pessoal: 'Pessoal',
   freelance: 'Freelance',
   equipe: 'Projeto em equipe',
+  privado: 'Projeto privado',
 }
 
 const categoryLabel = (category: ProjectCategory) =>
   projectCategories.find((c) => c.value === category)?.label ?? category
 
-// Só aceita links https válidos (ex.: evita "Privado do cliente" virar um link quebrado)
 const isHttpsUrl = (value?: string): value is string => {
   if (!value) return false
   try {
@@ -27,7 +27,6 @@ const isHttpsUrl = (value?: string): value is string => {
   }
 }
 
-// Botões na ordem: Ver online, Documentação e GitHub (ou GitHub front e back)
 function projectLinks(project: Project) {
   const links = [
     { label: 'Ver online', href: project.demoUrl },
@@ -38,6 +37,7 @@ function projectLinks(project: Project) {
           { label: 'GitHub back', href: project.githubBack },
         ]
       : [{ label: 'GitHub', href: project.github }]),
+    ...(project.links ?? []).map(({ label, url }) => ({ label, href: url })),
   ]
   return links.filter((link): link is { label: string; href: string } => isHttpsUrl(link.href))
 }
@@ -55,7 +55,6 @@ export default function Projects() {
   const [searchTerm, setSearchTerm] = useState('')
   const [filter, setFilter] = useState<Filter>('todos')
 
-  // Busca por título, descrição e tecnologia, combinada com o filtro de categoria
   const visibleProjects = useMemo(() => {
     const query = searchTerm.trim().toLowerCase()
     return projects.filter((project) => {
@@ -130,8 +129,7 @@ export default function Projects() {
                   className="grid grid-cols-[.95fr_1.05fr] items-center gap-[clamp(1.5rem,4vw,3rem)] max-[860px]:grid-cols-1"
                 >
                   <div className={`relative ${imageRight ? 'order-2 max-[860px]:order-none' : ''}`}>
-                    {/* Moldura 16:10 com cantos assimétricos: .frame-leaf com a imagem à esquerda,
-                        .frame-leaf-alt (espelhada) com a imagem à direita */}
+                    
                     <div
                       className={`relative aspect-[16/10] overflow-hidden border border-line bg-surface-2 ${
                         imageRight ? 'frame-leaf-alt' : 'frame-leaf'
@@ -145,7 +143,7 @@ export default function Projects() {
                         className="object-cover"
                       />
                     </div>
-                    {/* Selo no canto de cima com raio pequeno (esquerdo na .frame-leaf, direito na -alt) */}
+                    
                     {project.featured && (
                       <span
                         className={`absolute top-4 rounded-full border border-line bg-surface px-[.7rem] py-[.2rem] text-[.76rem] text-tulip ${
@@ -155,8 +153,7 @@ export default function Projects() {
                         Destaque
                       </span>
                     )}
-                    {/* Rabisco </> colado com fita no canto de baixo de raio grande, 12px para fora da borda
-                        (com a rotação, ainda cabe na margem lateral de 20px). Até 640px fica com 64px. */}
+                    
                     <span
                       aria-hidden="true"
                       className={`pointer-events-none absolute -bottom-7 z-10 block w-[104px] max-[640px]:-bottom-5 max-[640px]:w-16 ${
@@ -173,17 +170,25 @@ export default function Projects() {
                       {kindLabels[project.kind]}
                       <span className="h-[5px] w-[5px] rounded-full bg-gold" aria-hidden="true" />
                       {categoryLabel(project.category)}
+                      {project.status && (
+                        <>
+                          <span className="h-[5px] w-[5px] rounded-full bg-gold" aria-hidden="true" />
+                          Em andamento
+                        </>
+                      )}
                     </p>
                     <h3 className="mb-2 font-display text-[1.35rem] font-semibold leading-[1.25] text-ink">{project.title}</h3>
                     <p className="mb-4 max-w-[54ch]">{project.description}</p>
 
-                    <ul className="m-0 mb-[1.3rem] mt-4 flex list-none flex-wrap gap-[.45rem] p-0" aria-label="Tecnologias">
-                      {project.technologies.map((tech) => (
-                        <li key={tech} className="rounded-full border border-line px-[.72rem] py-[.24rem] text-[.82rem] text-body">
-                          {tech}
-                        </li>
-                      ))}
-                    </ul>
+                    {project.technologies.length > 0 && (
+                      <ul className="m-0 mb-[1.3rem] mt-4 flex list-none flex-wrap gap-[.45rem] p-0" aria-label="Tecnologias">
+                        {project.technologies.map((tech) => (
+                          <li key={tech} className="rounded-full border border-line px-[.72rem] py-[.24rem] text-[.82rem] text-body">
+                            {tech}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
 
                     {project.nextTechnologies && (
                       <p className="-mt-2 mb-[1.3rem] text-[.85rem] text-muted">

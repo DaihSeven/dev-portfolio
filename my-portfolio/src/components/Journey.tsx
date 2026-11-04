@@ -6,11 +6,9 @@ interface Stop {
   where: string
   text?: string
   items?: string[]
-  // Ponto preenchido na linha do tempo (atividade atual)
   now?: boolean
 }
 
-// Ordem pedida no comentário do design: Escola da Nuvem, freelancers e, por fim, Google
 const stops: Stop[] = [
   {
     when: 'Fevereiro de 2024 — hoje',
@@ -45,7 +43,6 @@ const stops: Stop[] = [
 
 export default function Journey() {
   return (
-    // .sec + .dome: termina em curva sobre a seção seguinte
     <section id="jornada" className="sec dome font-karla text-[17px] leading-[1.65] text-body">
       <div className="mx-auto w-[min(1120px,100%_-_2.5rem)]">
         <div className="mb-[2.4rem] flex flex-wrap items-baseline gap-4">

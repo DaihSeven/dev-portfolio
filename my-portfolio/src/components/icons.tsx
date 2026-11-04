@@ -1,4 +1,4 @@
-// Ícones SVG do design (design/portfolio-daiane.html), com traço em currentColor
+// Ícones SVG do design, com traço em currentColor
 interface IconProps {
   className?: string
 }

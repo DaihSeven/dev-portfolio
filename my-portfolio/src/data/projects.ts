@@ -1,26 +1,24 @@
-// Fonte: design/dados-portfolio.md (seção PROJETOS). Futuramente num Neon PostgreSQL.
+
 export type ProjectCategory = 'frontend' | 'backend' | 'fullstack' | 'devops' | 'dados-ia'
 
-// Origem do projeto, exibida antes da categoria ("Freelance · Front-end")
-export type ProjectKind = 'pessoal' | 'freelance' | 'equipe'
+export type ProjectKind = 'pessoal' | 'freelance' | 'equipe' | 'privado'
 
 export interface Project {
   id: string
   title: string
   description: string
-  // Capa 4:3: print real (/projects/<id>.jpg) ou ilustração (/projects/covers/<id>.svg)
   image: string
   technologies: string[]
-  // Stack planejada para as próximas etapas do projeto
   nextTechnologies?: string[]
   category: ProjectCategory
   kind: ProjectKind
   featured?: boolean
-  // Repositório principal. Quando houver githubBack, este é o do front-end.
   github?: string
   githubBack?: string
   demoUrl?: string
   docsUrl?: string
+  links?: { label: string; url: string }[]
+  status?: 'em andamento'
 }
 
 export const projectCategories: { value: ProjectCategory; label: string }[] = [
@@ -110,7 +108,44 @@ export const projects: Project[] = [
     category: 'dados-ia',
     kind: 'pessoal',
     featured: true,
-    github: 'https://github.com/DaihSeven/mlops-anomalias',
+    github: 'https://github.com/DevDaih/mlops-anomalias',
+    links: [
+      {
+        label: 'Artigo no LinkedIn',
+        url: 'https://www.linkedin.com/pulse/o-modelo-n%25C3%25A3o-viu-drift-monitoramento-barbosa-koslowski-xaq4f',
+      },
+      {
+        label: 'Modelo no Hugging Face',
+        url: 'https://huggingface.co/DevDaih/mlops-anomalias-isolation-forest',
+      },
+      {
+        label: 'Notebook no Kaggle',
+        url: 'https://www.kaggle.com/code/devdaih/isolationforest-em-fraude-de-cart-o-mlops-anomalia',
+      },
+      {
+        label: 'Post no LinkedIn',
+        url: 'https://lnkd.in/p/dDzYPfwD',
+      },
+    ],
+  },
+  {
+    id: 'studyforge-mcp-validator',
+    title: 'StudyForge MCP Validator',
+    description: 'MCP Server para validar arquitetura, specs e ADRs do StudyForge. Agentes com Tools e servidores MCP integrados a APIs e dados, desenvolvidos com Claude Code e Copilot, com revisão manual e testes.',
+    image: '/projects/covers/studyforge-mcp-validator.svg',
+    technologies: ['TypeScript', 'MCP', 'Agentes de IA', 'Integração com APIs', 'Testes automatizados'],
+    category: 'dados-ia',
+    kind: 'pessoal',
+    github: 'https://github.com/DaihSeven/studyforge-mcp-validator',
+  },
+  {
+    id: 'studyforge',
+    title: 'StudyForge',
+    description: 'Plataforma de estudos para criação, edição, publicação e execução de simulados, construída a partir de material fornecido pelo mentor em formatos variados.',
+    image: '/projects/covers/studyforge.svg',
+    technologies: [],
+    category: 'fullstack',
+    kind: 'privado',
   },
   {
     id: 'observabilidade',

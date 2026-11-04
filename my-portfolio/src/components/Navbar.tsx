@@ -16,7 +16,6 @@ type Theme = 'light' | 'dark'
 
 const darkQuery = '(prefers-color-scheme: dark)'
 
-// Tema efetivo: o escolhido no botão (data-theme no <html>) ou, sem escolha, o do sistema
 function currentTheme(): Theme {
   const set = document.documentElement.getAttribute('data-theme')
   if (set === 'light' || set === 'dark') return set
@@ -26,12 +25,10 @@ function currentTheme(): Theme {
 const focusRing = 'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-gold'
 
 export default function Navbar() {
-  // null até montar no cliente: o servidor não sabe qual é o tema
   const [theme, setTheme] = useState<Theme | null>(null)
 
   useEffect(() => {
     setTheme(currentTheme())
-    // Acompanha a troca de tema do sistema enquanto não houver escolha manual
     const media = window.matchMedia(darkQuery)
     const onChange = () => setTheme(currentTheme())
     media.addEventListener('change', onChange)
@@ -44,7 +41,6 @@ export default function Navbar() {
     try {
       localStorage.setItem('theme', next)
     } catch {
-      // armazenamento indisponível (ex.: modo privado): o tema vale só nesta visita
     }
     setTheme(next)
   }

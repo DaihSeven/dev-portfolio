@@ -9,13 +9,10 @@ const socials = [
 
 const focusRing = 'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-gold'
 
-// Fundo de estrelas do design (--tile), esmaecido por uma máscara radial à direita
 const tileMask = 'radial-gradient(120% 85% at 78% 30%, #000 10%, transparent 72%)'
 
 export default function Hero() {
   return (
-    // .dome: fim da seção em curva. O padding-bottom do .dome é mantido (no HTML ele é
-    // zerado pelo .hero e a curva corta os ícones sociais).
     <section id="inicio" className="dome overflow-hidden pt-[clamp(3rem,7vw,5rem)] font-karla text-[17px] leading-[1.65] text-body">
       <div
         className="pointer-events-none absolute inset-0 bg-tile"
@@ -75,9 +72,6 @@ export default function Hero() {
           <GullIcon className="absolute -top-[34px] right-[-10px] h-[21px] w-14 text-ink opacity-50" />
           <TeaIcon className="absolute left-[-30px] top-[10px] h-11 w-11 text-gold" />
 
-          {/* Flores (antes da moldura no DOM, para ficarem atrás dela como no HTML).
-              Imagens quadradas de 120px no lugar dos espaços de 92px do design: o deslocamento
-              lateral soma os 28px extras para a parte visível ficar igual à do HTML. */}
           <Image
             src="/images/lily-flowering-tulips.png"
             alt="Tulipas"

@@ -1,23 +1,16 @@
-// Fonte: design/dados-portfolio.md (seção CERTIFICAÇÕES, FORMAÇÕES E CURSOS, pendências e ressalvas).
-// Futuramente num Neon PostgreSQL.
-// Regras: não inventar carga horária, links nem datas (campo vazio = não renderiza);
-// nunca somar carga horária (Business Agility faz parte do ONE).
+
 export type CertificateCategory = 'certificacao' | 'formacao' | 'curso'
 
 export interface Certificate {
   id: string
   title: string
   institution: string
-  // Data como deve aparecer no card (vazia quando o certificado não tem data)
   date?: string
-  // AAAA-MM, usado só para ordenar
   sort?: string
   description?: string
   category: CertificateCategory
   featured?: boolean
-  // Soft skills aparecem depois dos itens técnicos do mesmo ano
   softSkill?: boolean
-  // Ainda em curso: o card mostra a tag "Em andamento"
   inProgress?: boolean
   workload?: string
   technologies?: string[]
@@ -151,7 +144,6 @@ const items: Certificate[] = [
     sort: '2026-01',
     category: 'formacao',
     workload: '17h',
-    // Certificado só no LinkedIn, sem URL pública: sem botão
     description: 'Programa de Mentoria e Eventos Complementares com carga horária total de 17 horas de desenvolvimento focado no futuro profissional.',
   },
   {
@@ -176,7 +168,6 @@ const items: Certificate[] = [
     featured: true,
     inProgress: true,
     workload: '100h',
-    // Sem links e sem tecnologias informados
     description: 'Especialização focada em capacitar desenvolvedores na criação, segurança e automação de softwares com Inteligência Artificial. O programa abrange desde os fundamentos de AIOps, Engenharia de Prompt e Agentes de IA (como n8n e Google ADK), até práticas avançadas de Engenharia de Software modernas (Clean Code, DDD, BDD) adaptadas à era da IA. Fluxos de trabalho guiados por IA, arquiteturas RAG, segurança (OWASP para LLMs), testes automatizados e finalizam o curso com um projeto prático apresentado no Demo Day.',
   },
   {
@@ -239,7 +230,6 @@ const items: Certificate[] = [
     certificateUrl: 'https://drive.google.com/file/d/14EvC1xu955cWpT1gc3YilHn__euEd3JN/view?usp=drivesdk',
     verification: 'https://ada.tech/certificado?code=7cad7aa7-9c97-af1c-e5ec-d95ada3a6fce',
     technologies: ['DevOps', 'Cloud', 'Kubernetes', 'Docker', 'Linux', 'Terraform'],
-    // Descrição do site anterior (o arquivo não traz)
     description: 'Certificação em DevOps, Cloud Computing e ferramentas de infraestrutura como código',
   },
   {
@@ -284,7 +274,6 @@ const items: Certificate[] = [
     sort: '2024-12',
     category: 'curso',
     workload: '30h',
-    // Link de verificação informado nas ressalvas do arquivo
     verification: 'https://olimpiadas.tftec.com.br/verificar/P3MCQq9aeB',
     technologies: ['Azure'],
     description: 'Competição de conhecimentos em serviços de nuvem Microsoft Azure (VMs, VNet, Entra ID, App Services, Azure Functions, Azure DevOps, entre outros).',
@@ -331,7 +320,6 @@ const items: Certificate[] = [
     sort: '2023-09',
     category: 'curso',
     workload: '4h',
-    // Descrição do site anterior (o arquivo não traz)
     description: 'Curso avançado de programação Java e orientação a objetos',
   },
   {
@@ -343,7 +331,6 @@ const items: Certificate[] = [
     category: 'curso',
     workload: '4h',
     technologies: ['SQL', 'NoSQL'],
-    // Descrição do site anterior (o arquivo não traz)
     description: 'Fundamentos de bancos de dados relacionais e não-relacionais',
   },
   {
@@ -366,7 +353,6 @@ const items: Certificate[] = [
     category: 'curso',
     workload: '4h',
     technologies: ['Segurança'],
-    // Descrição do site anterior (o arquivo não traz)
     description: 'Treinamento em segurança cibernética e prevenção a ataques ransomware',
   },
   {
@@ -379,14 +365,12 @@ const items: Certificate[] = [
     workload: '12h',
     certificateUrl: 'https://drive.google.com/file/d/1tKcARN6OMYMWJcCNdOl7KqZARmP98Vme/view?usp=drivesdk',
     technologies: ['Segurança'],
-    // Descrição do site anterior (o arquivo não traz)
     description: 'Curso de técnicas de penetration testing e segurança ofensiva',
   },
   {
     id: 'coodesh-javascript-jquery',
     title: 'Programação Front-End em JavaScript e jQuery',
     institution: 'Coodesh',
-    // "sem data" no arquivo: só o sort é usado para ordenar
     sort: '2023-01',
     category: 'curso',
     workload: '82 min',
@@ -408,7 +392,6 @@ const items: Certificate[] = [
     id: 'sql-linguagem-banco-de-dados',
     title: 'Curso Express: SQL, Linguagem de Banco de Dados',
     institution: 'ENG DTP & Multimídia',
-    // Sem data e sem sort: vai para o fim da lista
     category: 'curso',
     workload: '3h',
     certificateUrl: 'https://drive.google.com/file/d/1EzXSSpEuG8rh9updtYAjOBm7ygd-t6pQ/view?usp=drivesdk',
@@ -424,7 +407,6 @@ const items: Certificate[] = [
     softSkill: true,
     workload: '2h',
     certificateUrl: 'https://drive.google.com/file/d/1udcxoLialgVFXORDf-AbIQH7abyIR02C/view?usp=drivesdk',
-    // Descrição do site anterior (o arquivo não traz)
     description: 'Formação em liderança, gestão de pessoas e transformação organizacional',
   },
   {
@@ -461,7 +443,6 @@ const items: Certificate[] = [
     description: 'Curso de extensão com aulas ao vivo focadas em competências técnicas e profissionais: princípios de design arquitetônico baseados nos requisitos do cliente e projeto de sistemas distribuídos escaláveis, resilientes e tolerantes a falhas.',
   },
 
-  // ---------- Só no site anterior (mantido como estava) ----------
   {
     id: 'pucrs-jornada-inteligencia-profissional',
     title: 'Certificação em Jornada da Inteligência Profissional',
@@ -473,8 +454,6 @@ const items: Certificate[] = [
   },
 ]
 
-// Mais recente primeiro. No mesmo ano, soft skills vêm depois dos itens técnicos.
-// Itens sem data (sem sort) ficam no fim, na ordem do arquivo.
 const sortKey = (c: Certificate) => {
   if (!c.sort) return null
   const [year, month] = c.sort.split('-').map(Number)
