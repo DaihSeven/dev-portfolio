@@ -13,6 +13,11 @@
 # testing
 /coverage
 
+/design/copilot-instructions.md
+*/design/*
+
+HISTORICO_CLAUDE.md
+
 # next.js
 /.next/
 /out/
@@ -39,3 +44,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# material de design (referência local, não vai para a main)
+/design/

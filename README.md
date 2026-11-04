@@ -1,158 +1,116 @@
-# 🚀 Portfólio Daiane - Desenvolvedora Full Stack
+# Daiane, desenvolvedora full stack
 
-<div align="center">
+Este é o meu portfólio. Ele tem cara de jardim: papel quente, tulipas, chá, azulejo e um gatinho dormindo no rodapé. Por baixo disso tem back-end de verdade, projetos reais e muita certificação de nuvem.
 
-![Next.js](https://img.shields.io/badge/Next.js-14.2.35-black?style=for-the-badge&logo=next.js)
-![React](https://img.shields.io/badge/React-18.3.1-61DAFB?style=for-the-badge&logo=react)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.2.2-3178C6?style=for-the-badge&logo=typescript)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4.8-38B2AC?style=for-the-badge&logo=tailwind-css)
-
-[**✨ Ver Demo ao Vivo**](https://dev-portfolio-murex-phi.vercel.app/) | [**📚 Documentação Completa(em construção)**](https://github.com/DaihSeven/dev-portfolio/wiki)
-</div>
+[Ver o site no ar](https://dev-portfolio-murex-phi.vercel.app/)
 
 ---
 
-## 📋 Sobre o Projeto
+## O que tem aqui dentro
 
-Portfólio profissional moderno e responsivo desenvolvido com Next.js 14, React 18 e Tailwind CSS. Apresenta projetos, habilidades técnicas, certificações e informações de contato com design clean e performance otimizada.
+Uma página só, com sete paradas:
 
-### ✨ Destaques
+| Seção | O que mostra |
+|---|---|
+| Início | Quem eu sou, minha foto numa janela em arco e os cartões de mentora AWS e certificações |
+| Sobre mim | Minha história, uma frase que eu levo comigo e as coisas de que eu gosto (Corinthians, chá, séries turcas, bolos, plantas, bichos) |
+| Jornada | Freelas, mentoria na Escola da Nuvem e a facilitação no Google Cloud Arcade, numa linha do tempo |
+| Tecnologias | Um "canteiro" com tudo o que eu planto no dia a dia, na ordem back-end, nuvem, front-end e dados |
+| Projetos | Todos abertos na mesma página, com busca e filtros por Front-end, Back-end, Full stack, DevOps e Dados e IA |
+| Certificados | Certificações, formações e cursos, com busca, filtros, destaques e o que ainda está em andamento |
+| Contato | Um convite para conversar, com os meus dois perfis do GitHub, LinkedIn, e-mail e telefone |
 
-- 🎨 Design moderno com tema rosa e gradientes suaves
-- 📱 100% Responsivo (mobile-first)
-- ⚡ Performance otimizada (SSG + Static Export)
-- 🔍 Filtros para facilitar a pesquisa de projetos e certificados
-- 🎭 Animações suaves e interativas
-- ♿ Acessível (WCAG 2.1)
+## O jeito do site
 
----
+- **Dois temas.** "Manhã no jardim" (claro) e "Noite no Bósforo" (escuro). O site começa no tema do seu sistema, e a sua escolha fica guardada.
+- **Fontes.** Cormorant Garamond nos títulos, Karla no texto e Caveat nas notinhas à mão.
+- **Cores por variáveis.** Nada de cor fixa nos componentes: tudo vem de variáveis CSS, o que faz o escuro funcionar sem retrabalho.
+- **Capas desenhadas.** Os projetos que não têm print ganham uma capa em SVG, desenhada em traço fino no mesmo estilo do site.
+- **Conteúdo separado do código.** Projetos, certificados e tecnologias moram em arquivos de dados. Para atualizar o portfólio, quase nunca preciso mexer em componente.
 
-## 🚀 Início Rápido
+## Cuidados de acessibilidade
+
+Não é uma auditoria completa, mas é o que o projeto já faz:
+
+- texto alternativo nas imagens
+- foco visível nos elementos interativos
+- filtros que informam seu estado (`aria-pressed`)
+- animações desligadas para quem pede menos movimento (`prefers-reduced-motion`)
+- links externos com `rel="noopener noreferrer"`
+
+## Tecnologias
+
+- Next.js 14 (App Router) e React 18
+- TypeScript
+- Tailwind CSS 3
+- lucide-react, mais ícones em SVG feitos à mão
+- Deploy na Vercel
+
+As versões exatas estão em `my-portfolio/package.json`.
+A arquitetura do app está descrita no [README interno](my-portfolio/README.md).
+
+## Rodando na sua máquina
+
 ```bash
-# Clonar repositório
 git clone https://github.com/DaihSeven/dev-portfolio.git
-
-# Entrar na pasta
 cd dev-portfolio/my-portfolio
-
-# Instalar dependências
 npm install
-
-# Rodar em desenvolvimento
 npm run dev
 ```
 
-Acesse: `http://localhost:3000`
+Depois é só abrir `http://localhost:3000`.
 
----
+### Scripts
 
-## 🛠️ Tecnologias Principais
+```bash
+npm run dev          # servidor de desenvolvimento
+npm run build        # build de produção
+npm start            # servidor de produção (depois do build)
+npm run lint         # verifica o código com o ESLint
+npx tsc --noEmit     # checa os tipos do TypeScript
+```
 
-| Tecnologia | Versão | Uso |
-|------------|--------|-----|
-| **Next.js** | 14.2.35 | Framework React |
-| **React** | 18.3.1 | Biblioteca UI |
-| **TypeScript** | 5.2.2 | Tipagem estática |
-| **Tailwind CSS** | 3.4.8 | Estilização |
-| **Lucide React** | 0.563.0 | Ícones |
+## Como o projeto está organizado
 
----
-
-## 📂 Estrutura do Projeto
 ```
 my-portfolio/
-├── app/              # Páginas e layouts (Next.js App Router)
-├── components/       # Componentes React reutilizáveis
-├── data/            # Dados dos projetos e certificados
-├── public/          # Arquivos estáticos (imagens, etc)
-└── tailwind.config.ts # Configuração do Tailwind
+├── src/
+│   ├── app/          # layout, estilos globais (temas e variáveis) e a página
+│   ├── components/   # uma seção por arquivo: Hero, About, Journey, Projects...
+│   ├── data/         # projetos, certificados e tecnologias
+│   └── hooks/        # animação de entrada ao rolar a página
+├── public/
+│   ├── images/       # foto, flores e imagens de apoio
+│   └── projects/     # prints dos projetos (e as capas em SVG)
+└── tailwind.config.js
 ```
 
----
+### Adicionando um projeto
 
-## 🎨 Funcionalidades
+1. Coloque o print em `my-portfolio/public/projects/` (ou uma capa em SVG em `public/projects/covers/`).
+2. Acrescente um item em `my-portfolio/src/data/projects.ts` com título, descrição, tecnologias, categoria e links.
+3. Rode `npm run lint` e `npm run build` para conferir.
 
-### 🏠 Hero Section
-Apresentação pessoal com animações e gradientes modernos
+Certificados seguem a mesma ideia, em `src/data/certificates.ts`. Onde eu não sei a carga horária ou o link, o campo fica vazio, e o site simplesmente não mostra.
 
-### 👤 Sobre Mim
-Biografia profissional + hobbies + grid de tecnologias
+## Deploy
 
-### 💼 Projetos
-- Carrossel interativo
-- Filtros por categoria (Frontend, Backend, Full Stack, DevOps)
-- Busca por tecnologia
-- Badges de status e destaque
+Cada push na `main` publica automaticamente na Vercel. Para gerar o build manualmente:
 
-### 🎓 Certificados
-- Lista organizada por tipo (Certificação, Formação, Curso)
-- Filtro por instituição
-- Timeline ordenada
-
-### 📞 Contato
-Links diretos para GitHub, LinkedIn, Email e WhatsApp
-
----
-
-## 🚀 Deploy
-
-O projeto está configurado para deploy automático na Vercel:
-
-[![Deploy with Vercel](https://vercel.com/button)](https://dev-portfolio-murex-phi.vercel.app/)
-
-**OU manualmente:**
 ```bash
 npm run build
 npm start
 ```
 
----
+## Licença
 
-## 📝 Scripts Disponíveis
-```bash
-npm run dev          # Servidor de desenvolvimento
-npm run build        # Build de produção
-npm start            # Servidor de produção
-npm run lint         # Verificar erros de código
-npm audit --omit=dev # Audita mas ignora o glob
-```
+MIT. Veja o arquivo [LICENSE](LICENSE).
 
----
+## Quem fez
 
-## 🤝 Contribuindo
+**Daiane das Graças Barbosa Koslowski**, estudante de Engenharia de Software, mentora de cloud computing e torcedora do Corinthians.
 
-Contribuições são bem-vindas! Veja o [guia de contribuição](CONTRIBUTING.md).
+- GitHub: [@DaihSeven](https://github.com/DaihSeven) e [@DevDaih](https://github.com/DevDaih)
+- LinkedIn: [/in/daianebarbosak](https://www.linkedin.com/in/daianebarbosak/)
 
-1. Fork o projeto
-2. Crie uma branch (`git checkout -b feature/NovaFuncionalidade`)
-3. Commit suas mudanças (`git commit -m 'Adiciona nova funcionalidade'`)
-4. Push para a branch (`git push origin feature/NovaFuncionalidade`)
-5. Abra um Pull Request
-
----
-
-## 📄 Licença
-
-Este projeto está sob a licença MIT. Veja [LICENSE](LICENSE) para mais informações.
-
----
-
-## 👩‍💻 Autora
-
-**Daiane das Graças Barbosa Koslowski**
-
-[![GitHub](https://img.shields.io/badge/GitHub-DaihSeven-181717?style=for-the-badge&logo=github)](https://github.com/DaihSeven)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Daiane-0A66C2?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/daianebarbosak/)
-[![Portfolio](https://img.shields.io/badge/Portfolio-Online-FF6B9D?style=for-the-badge&logo=vercel)](https://dev-portfolio-murex-phi.vercel.app/)
-
----
-
-<div align="center">
-
-**⭐ Se este projeto te ajudou, deixe uma estrela!**
-
-Feito com 💖 e ☕ por [Daiane](https://github.com/DaihSeven)
-
-**Vai Corinthians!**
-
-</div>
+Vai, Corinthians!
